@@ -1,7 +1,7 @@
 import axios from "axios"
 
-export const loginUser = async (email: string, password: string) => {
-  const response = await axios.post(`${process.env.REACT_APP_API_URL}/auth`, {
+export const loginUser = async ({email, password}: {email: string, password: string}) => {
+  const response = await axios.post(`${import.meta.env.VITE_API_URL}/auth/login`, {
     username: email,
     password
   },{

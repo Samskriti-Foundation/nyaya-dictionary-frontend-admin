@@ -5,6 +5,9 @@ import PrivateRoutes from './utils/PrivateRoutes'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 
+import axios from "axios"
+axios.defaults.withCredentials = true;
+
 function App() {
   return (
     <Box h = "full">

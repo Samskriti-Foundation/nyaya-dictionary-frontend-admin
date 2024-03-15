@@ -8,6 +8,11 @@ import theme from './utils/theme.ts'
 import { Global, css } from '@emotion/react'
 
 import { BrowserRouter } from 'react-router-dom'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+
+
+const queryClient = new QueryClient()
 
 const GlobalStyles = css`
     /*
@@ -25,7 +30,10 @@ const GlobalStyles = css`
     <ChakraProvider theme={theme}>
       <Global styles={GlobalStyles} />
       <BrowserRouter>
-        <App />
+        <QueryClientProvider client={queryClient}>
+          <App />
+          <ReactQueryDevtools initialIsOpen/>
+        </QueryClientProvider>
       </BrowserRouter>
     </ChakraProvider>
   </React.StrictMode>

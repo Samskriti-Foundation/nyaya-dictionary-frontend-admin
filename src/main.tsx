@@ -31,7 +31,7 @@ const GlobalStyles = css`
       <Global styles={GlobalStyles} />
       <BrowserRouter>
         <QueryClientProvider client={queryClient}>
-          <App />
+            <App />
           <ReactQueryDevtools initialIsOpen/>
         </QueryClientProvider>
       </BrowserRouter>

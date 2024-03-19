@@ -6,6 +6,7 @@ import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 
 import axios from "axios"
+import AdminsPage from './pages/AdminsPage'
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -15,6 +16,7 @@ function App() {
         <Route path = "/" element = {<LoginPage />}/>
         <Route element = {<PrivateRoutes />}>
           <Route path = "/dashboard" element = {<DashboardPage />}/>
+          <Route path = "/admin-management" element = {<AdminsPage />}/>
         </Route>
       </Routes>
     </Box>

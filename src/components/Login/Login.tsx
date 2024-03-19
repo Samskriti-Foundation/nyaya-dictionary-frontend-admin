@@ -17,23 +17,20 @@ import { PasswordField } from "./PasswordField";
 import { useMutation } from "@tanstack/react-query";
 import { loginUser } from "../../api/LoginApi";
 
-import Cookies from 'js-cookie';
-
-import { useNavigate } from "react-router-dom";
 import { BaseSyntheticEvent } from "react";
 
 import { useToast } from '@chakra-ui/react'
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const navigate = useNavigate()
   const toast = useToast()
+  const navigate = useNavigate()
 
   const mutation = useMutation({
     mutationFn: loginUser,
-    onSuccess: (data) => {
-      const token = data.access_token
-      Cookies.set("token", token)
-      navigate("/dashboard")
+    onSuccess: (data: {access_token: string, token_type: string}) => {
+      localStorage.setItem('token', data.access_token)
+      navigate('/dashboard')
     },
     onError: (res: any) => {
       toast({
@@ -58,7 +55,7 @@ export default function Login() {
       <Stack spacing = {4}>
         <Center>
           <Icon as={FaBook} h = "32px" w = "32px"/>
-          <Heading fontSize = "24px" pl = "12px">Nyaya Dictionary</Heading>
+          <Heading fontSize = "24px" pl = "12px">Nyaya Dictionary - Admin</Heading>
         </Center>
         <Heading>Login to you account</Heading>
         <Divider orientation='horizontal' borderColor = "primary.900"/>

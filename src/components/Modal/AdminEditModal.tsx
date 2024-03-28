@@ -50,10 +50,7 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
   
   const mutation = useMutation({
     mutationFn: updateAdmin,
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({queryKey: ["admins"]})
-      console.log(data)
-    },
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ["admins"]}),
     onError: (res: any) => {
       toast({
         position: "top",

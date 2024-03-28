@@ -31,6 +31,7 @@ export const PasswordField = forwardRef<HTMLInputElement, InputProps>((props, re
 				<InputRightElement>
 					<IconButton
 						variant="text"
+						color = "primary"
 						aria-label={isOpen ? 'Mask password' : 'Reveal password'}
 						icon={isOpen ? <HiEyeOff /> : <HiEye />}
 						onClick={onClickReveal}

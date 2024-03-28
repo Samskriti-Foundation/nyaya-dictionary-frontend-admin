@@ -8,7 +8,7 @@ export default function LoginPage() {
     <Flex
       h = "100%"
       w = "100%"
-      bg = "primary.300"
+      bg = "background"
       justifyContent = "center"
       alignItems = "center"
     >

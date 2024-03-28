@@ -11,7 +11,6 @@ import {
     Button,
 } from "@chakra-ui/react";
 
-
 import { FaBook } from "react-icons/fa";
 import { PasswordField } from "./PasswordField";
 import { useMutation } from "@tanstack/react-query";
@@ -19,10 +18,13 @@ import { loginUser } from "../../api/LoginApi";
 
 import { BaseSyntheticEvent } from "react";
 
+import { useState } from "react";
 import { useToast } from '@chakra-ui/react'
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
+  const [isLoading , setIsLoading] = useState(false)
+
   const toast = useToast()
   const navigate = useNavigate()
 
@@ -31,6 +33,7 @@ export default function Login() {
     onSuccess: (data: {access_token: string, token_type: string}) => {
       localStorage.setItem('token', data.access_token)
       navigate('/dashboard')
+      setIsLoading(false)
     },
     onError: (res: any) => {
       toast({
@@ -40,20 +43,23 @@ export default function Login() {
         duration: 3000,
         isClosable: true,
       })
+      setIsLoading(false)
     }
   })
   
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
+    setIsLoading(true)
     let email = e.target.form[0].value
     let password = e.target.form[2].value
+    console.log(isLoading)
     mutation.mutate({email, password})
   }
 
   return (
-    <Card maxW="md" p = {8} bg = "primary.400" color = "primary.900" boxShadow="lg">
+    <Card maxW="md" p = {8} bg = "foreground" boxShadow="lg">
       <Stack spacing = {4}>
-        <Center>
+        <Center color = "primary">
           <Icon as={FaBook} h = "32px" w = "32px"/>
           <Heading fontSize = "24px" pl = "12px">Nyaya Dictionary - Admin</Heading>
         </Center>
@@ -66,28 +72,27 @@ export default function Login() {
               <Input
                 id="email"
                 type="email"
-                borderColor = "primary.900"
+                borderColor = "primary"
                 placeholder="Enter your email"
-                _focus = {{borderColor: "primary.500"}}
-                _hover = {{borderColor: "primary.500"}}
-                _placeholder={{color: "primary.900"}}
+                _focus = {{borderColor: "primary"}}
+                _hover = {{borderColor: "secondary"}}
                 required
               />
             </FormControl>
             <PasswordField
-              borderColor = "primary.900"
-              placeholder="Enter your email"
-              _focus = {{borderColor: "primary.500"}}
-              _hover = {{borderColor: "primary.500"}}
-              _placeholder={{color: "primary.900"}}
+              borderColor = "primary"
+              placeholder="Enter your password"
+              _focus = {{borderColor: "primary"}}
+              _hover = {{borderColor: "secondary"}}
             />
             <Button
-              bg = "primary.500"
-              color= "primary.300"
-              _hover={{bg: "primary.900"}}
+              bg = "primary"
+              color= "foreground"
+              _hover={{bg: "secondary"}}
               type = "submit"
               onClick={(e) => handleSubmit(e)}
-            >Login
+              isLoading = {isLoading}
+              >Login
             </Button>
           </Stack>
         </form>

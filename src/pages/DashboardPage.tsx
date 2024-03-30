@@ -2,6 +2,8 @@ import BaseLayout from "../layouts/BaseLayout"
 
 export default function DashboardPage() {
   return (
-    <BaseLayout/>
+    <BaseLayout>
+      i
+    </BaseLayout>
   )
 }

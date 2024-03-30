@@ -4,8 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import PrivateRoutes from './utils/PrivateRoutes'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
-
-import AdminsPage from './pages/AdminsPage'
+import ManagementPage from './pages/Management/ManagementPage'
 
 function App() {
   return (
@@ -13,8 +12,8 @@ function App() {
       <Routes>
         <Route path = "/" element = {<LoginPage />}/>
         <Route element = {<PrivateRoutes />}>
-          <Route path = "/dashboard" element = {<DashboardPage />}/>
-          <Route path = "/admin-management" element = {<AdminsPage />}/>
+          <Route path = "/dictionary" element = {<DashboardPage />}/>
+          <Route path = "/management" element = {<ManagementPage />}/>
         </Route>
       </Routes>
     </Box>

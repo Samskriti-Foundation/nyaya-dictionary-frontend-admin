@@ -37,9 +37,9 @@ export default function Navbar() {
           bgClip='text'
           ><Link 
             as = {NavLink}
-            to = "/dashboard"
+            to = "/dictionary"
             _hover = {{textDecoration: "none"}}
-            >Nyaya Khosha
+            >Nyaya - Admin Panel
           </Link>
         </Heading>
         <Spacer/>
@@ -49,18 +49,18 @@ export default function Navbar() {
           >
           <Link
             as = {NavLink}
-            to = "/dashboard"
+            to = "/dictionary"
             _hover = {{color: "secondary"}}
             _activeLink = {{color: "primary"}}
-            >Home
+            >Dictionary
           </Link>
           {user &&
             <Link
             as = {NavLink}
-            to = "/admin-management"
+            to = "/management"
             _hover = {{color: "secondary"}}
             _activeLink = {{color: "primary"}}
-            >Admin-Management
+            >Management
           </Link>
           }
           <Button

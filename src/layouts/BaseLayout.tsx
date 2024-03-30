@@ -13,7 +13,7 @@ export default function BaseLayout({ children }: BaseLayoutProps) {
       <Box pos = "sticky" top = "0" zIndex={200}>
         <Navbar />
       </Box>
-      <Box maxW="4xl" as = "main" mx="auto" p={4}>
+      <Box as = "main">
         {children}
       </Box>
       <Box

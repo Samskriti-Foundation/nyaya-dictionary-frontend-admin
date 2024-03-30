@@ -14,8 +14,16 @@ export const getAdmins = async () => {
   return response.data
 }
 
-export const updateAdmin = async ({email, data} : {email: string, data: {email: string, first_name: string, last_name: string}}) => {
-  const response = await api.put(`${import.meta.env.VITE_API_URL}/admins/${email}`, {
+
+type Admin = {
+  first_name: string
+  last_name: string
+  email: string
+  is_superuser: boolean
+}
+
+export const updateAdmin = async ({data}: {data: Admin}) => {
+  const response = await api.put(`${import.meta.env.VITE_API_URL}/admins/`, {
     ...data
   })
   return response.data

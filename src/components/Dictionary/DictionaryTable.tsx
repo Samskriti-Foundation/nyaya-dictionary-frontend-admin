@@ -1,4 +1,33 @@
 import {
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+  List,
+  ListItem,
+  Flex,
+  Text,
+  Wrap,
+  Box,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverHeader,
+  Button,
+  Checkbox,
+  
+} from "@chakra-ui/react"
+
+import {
   flexRender,
   getCoreRowModel,
   getSortedRowModel,
@@ -9,77 +38,116 @@ import {
   SortingState
 } from '@tanstack/react-table'
 
-import { MdEdit } from "react-icons/md";
+import {useMemo, useState} from "react"
+import { getWords } from "../../api/WordApi"
+import { useQuery } from "@tanstack/react-query"
+
 import { 
   FaSearch,
   FaSortAlphaDown,
   FaSortAlphaDownAlt 
 } from "react-icons/fa";
 
-  
-import {
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  TableContainer,
-  Box,
-  Flex,
-  Checkbox,
-  Button,
-  useDisclosure,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverArrow,
-  PopoverCloseButton,
-  IconButton,
-  InputGroup,
-  Input,
-  InputRightElement,
-} from '@chakra-ui/react'
-
-
-import { getAdmins } from '../../api/AdminApi'
-import { useState } from 'react'
-import { useQuery } from '@tanstack/react-query'
-import AdminEditModal from './AdminEditModal'
-import { Admin } from '../../types'
-
-export default function AdminTable() {
+export default function DictionaryTable() {
   const {data} = useQuery({
-    queryKey: ["admins"],
-    queryFn: getAdmins,
+    queryKey: ["words"],
+    queryFn: getWords
   })
 
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  const [columns] = useState<ColumnDef<Admin>[]>([
+  const columns = useMemo(() => [
     {
-      header: "First Name",
-      accessorKey: "first_name",
+      header: "ID",
+      accessorKey: "id",
     },
     {
-      header: "Last Name",
-      accessorKey: "last_name",
+      header: "Word",
+      accessorKey: "sanskrit_word",
     },
     {
-      header: "Email",
-      accessorKey: "email",
+      header: "Transliteration",
+      accessorKey: "english_word",
     },
-    // {
-    //   header: "Created At",
-    //   accessorKey: "created_at",
-    // },
-    // {
-    //   header: "Last Login",
-    //   accessorKey: "last_login",
-    // },
-  ])
+    {
+      header: "Etymology",
+      accessorKey: "etymologies",
+      cell: ({getValue}: any) => (
+        <List spacing = {3}>
+          {getValue().map((value: string) => (
+            <ListItem key={value}>{value}</ListItem>
+          ))}
+        </List>
+      ) 
+    },
+    {
+      header: "Derivations",
+      accessorKey: "derivations",
+      cell: ({getValue}: any) => (
+        <List spacing = {3}>
+          {getValue().map((value: string) => (
+            <ListItem key={value}>{value}</ListItem>
+          ))}
+        </List>
+      )
+    },
+    {
+      header: "Translation",
+      accessorKey: "translations",
+      cell: ({ getValue }: any) => (
+        <Table variant="striped" textAlign="center">
+          <Thead>
+            <Tr>
+              <Th>Language</Th>
+              <Th>Translation</Th>
+            </Tr>
+          </Thead>
+          <Tbody>
+            {getValue() && Object.keys(getValue()).map((key, i) => (
+              <Tr key={i}>
+                <Td>{key}</Td>
+                <Td>
+                  <Flex gap={2}>
+                    {getValue()[key].map((translation, j) => (
+                      <Text key={j}>{translation}</Text>
+                    ))}
+                  </Flex>
+                </Td>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>
+      )
+    },
+    {
+      header: "Detailed Description",
+      accessorKey: "description",
+    },
+    {
+      header: "Nyaya Text References",
+      accessorKey: "reference_nyaya_texts",
+    },
+    {
+      header: "Synonyms",
+      accessorKey: "synonyms",
+      cell: ({getValue}: any) => (
+        <Wrap gap = "3">
+          {getValue().map((value: string) => (
+            <Text key={value}>{value}</Text>
+          ))}
+        </Wrap>
+      )
+    },
+    {
+      header: "Antonyms",
+      accessorKey: "antonyms",
+      cell: ({getValue}: any) => (
+        <Wrap gap = "3">
+          {getValue().map((value: string) => (
+            <Text key={value}>{value}</Text>
+          ))}
+        </Wrap>
+      )
+    },
+  ], [])
 
   const [columnVisibility, setColumnVisibility] = useState({})
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>([])
@@ -104,13 +172,6 @@ export default function AdminTable() {
     onSortingChange: setSorting,
   })
 
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null)
-
-  const handleEditClick = (admin: Admin) => {
-    setSelectedAdmin(admin)
-    onOpen()
-  }
-
   return (
     <Box w = "100%" h = "100%" p = "4">
       <Flex justifyContent= "center" gap = "4" p = "4">
@@ -134,24 +195,24 @@ export default function AdminTable() {
             <PopoverBody>
               <Box>
                 <Checkbox isChecked = {table.getIsAllColumnsVisible()} onChange = {table.getToggleAllColumnsVisibilityHandler()} _checked={{
-        "& .chakra-checkbox__control": { background: "secondary", borderColor: "secondary" }}}>Toggle All</Checkbox>
+        "& .chakra-checkbox__control": { background: "secondary", borderColor: "secondary" }}} _hover = {{"& .chakra-checkbox__control": { background: "primary", borderColor: "primary"}}}>Toggle All</Checkbox>
               </Box>
               {table.getAllLeafColumns().map(column => (
                 <Box key = {column.id}>
                   <Checkbox isChecked = {column.getIsVisible()} onChange = {column.getToggleVisibilityHandler()} _checked={{
-        "& .chakra-checkbox__control": { background: "secondary", borderColor: "secondary" }}}> {`${column.columnDef.header}`} </Checkbox>
+        "& .chakra-checkbox__control": { background: "secondary", borderColor: "secondary" }}} _hover = {{"& .chakra-checkbox__control": { background: "primary", borderColor: "primary"}}}> {`${column.columnDef.header}`} </Checkbox>
                 </Box>
               ))}
             </PopoverBody>
           </PopoverContent>
         </Popover>
       </Flex>
-      <TableContainer bg = "foreground" boxShadow = "md" rounded = "md" maxW = "80%" mx = "auto">
+      <TableContainer bg = "foreground" boxShadow = "md" rounded = "md" maxW = "80%" mx = "auto" overflow = "scroll">
         <Table variant = "striped">
           <Thead>
-            {table.getHeaderGroups().map(headerGroup => (
-              <Tr key = {headerGroup.id}>
-                {headerGroup.headers.map(header => (
+          {table.getHeaderGroups().map(headerGroup => (
+            <Tr key={headerGroup.id}>
+              {headerGroup.headers.map(header => (
                   <Th key = {header.id} colSpan = {header.colSpan}>
                     {header.isPlaceholder
                       ? null
@@ -181,27 +242,22 @@ export default function AdminTable() {
                     }
                   </Th>
                 ))}
-                <Th>Actions</Th>
-              </Tr>
-            ))}
+            </Tr>
+          ))}
           </Thead>
           <Tbody>
             {data && table.getRowModel().rows.map(row => (
-              <Tr key = {row.id}>
+              <Tr key={row.id}>
                 {row.getVisibleCells().map(cell => (
-                  <Td key = {cell.id}>
+                  <Td key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </Td>
                 ))}
-                <Td>
-                  <IconButton aria-label = "Edit" icon = {<MdEdit/>} onClick = {() => handleEditClick(row.original)} bg = "none"/>
-                </Td>
               </Tr>
             ))}
           </Tbody>
         </Table>
       </TableContainer>
-      {selectedAdmin && <AdminEditModal isOpen={isOpen} onClose={onClose} dataItem={selectedAdmin} />}
     </Box>
   )
 }

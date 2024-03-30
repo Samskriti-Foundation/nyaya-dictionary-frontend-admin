@@ -1,7 +1,9 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { getCurrentUser } from './user';
 
 function PrivateRoutes() {
-  let user: boolean = localStorage.getItem('token') ? true : false;
+  let user = getCurrentUser()
+  
   return (
     user ? <Outlet /> : <Navigate to="/"/>
   );

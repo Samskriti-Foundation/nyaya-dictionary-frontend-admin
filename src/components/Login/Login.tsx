@@ -11,6 +11,8 @@ import {
     Button,
 } from "@chakra-ui/react";
 
+import { AxiosError } from "axios";
+
 import { FaBook } from "react-icons/fa";
 import { PasswordField } from "./PasswordField";
 import { useMutation } from "@tanstack/react-query";
@@ -32,13 +34,13 @@ export default function Login() {
     mutationFn: loginUser,
     onSuccess: (data: {access_token: string, token_type: string}) => {
       localStorage.setItem('token', data.access_token)
-      navigate('/dashboard')
+      navigate('/dictionary')
       setIsLoading(false)
     },
-    onError: (res: any) => {
+    onError: (res: AxiosError) => {
       toast({
         position: "top",
-        title: `Error: ${res.response.data.detail}`,
+        title: res.response?.data ? `Error: ${Object.entries(res.response?.data)[0][1]}` : `Error: ${res.message}`,
         status: 'error',
         duration: 3000,
         isClosable: true,
@@ -52,7 +54,6 @@ export default function Login() {
     setIsLoading(true)
     let email = e.target.form[0].value
     let password = e.target.form[2].value
-    console.log(isLoading)
     mutation.mutate({email, password})
   }
 

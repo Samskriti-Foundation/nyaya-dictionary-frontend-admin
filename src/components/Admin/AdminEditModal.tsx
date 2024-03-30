@@ -19,7 +19,6 @@ import {
 
 import { useToast } from '@chakra-ui/react'
 
-
 interface Props {
   isOpen: boolean;
   onClose: () => void;
@@ -27,26 +26,20 @@ interface Props {
     first_name: string
     last_name: string
     email: string
+    is_superuser: boolean
   }
 }
 
 
 export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
-  const [firstName, setFirstName] = useState(dataItem.first_name)
-  const [lastName, setLastName] = useState(dataItem.last_name)
-  const [email, setEmail] = useState(dataItem.email)
+  const [formData, setFormData] = useState({...dataItem})
 
-  const originalEmail = dataItem.email
+  useEffect(() => {
+    setFormData({...dataItem})
+  }, [dataItem])
 
   const queryClient = useQueryClient()
   const toast = useToast()
-
-  useEffect(() => {
-    setFirstName(dataItem.first_name)
-    setLastName(dataItem.last_name)
-    setEmail(dataItem.email)
-  }, [dataItem])
-
   
   const mutation = useMutation({
     mutationFn: updateAdmin,
@@ -64,15 +57,15 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
 
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
-
-    const data = {
-      first_name: firstName,
-      last_name: lastName,
-      email
-    }
-
-    mutation.mutate({email: originalEmail, data})
+    mutation.mutate({data: formData})
     onClose()
+  }
+
+  const handleInputChange = (key: string, value: any) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [key]: value,
+    }))
   }
 
   return (
@@ -83,12 +76,15 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
           <ModalHeader>Edit Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <Text>First Name:</Text>
-            <Input value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-            <Text>Last Name:</Text>
-            <Input value={lastName} onChange={(e) => setLastName(e.target.value)} />
-            <Text>Email:</Text>
-            <Input value={email} onChange={(e) => setEmail(e.target.value)} />
+            {Object.keys(formData).map((key) => (
+              <div key={key}>
+                <Text>{key}:</Text>
+                <Input
+                  value={formData[key]}
+                  onChange={(e) => handleInputChange(key, e.target.value)}
+                />
+              </div>
+            ))}
           </ModalBody>
           <ModalFooter>
             <Flex justifyContent='center' w='100%' gap = {4}>

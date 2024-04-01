@@ -4,6 +4,12 @@
 
 Nyaya - Admin Panel is the admin panel of [Nyaya Khosha](https://github.com/Samskriti-Foundation/nyaya-dictionary-frontend-main) developed by Samskriti Foundation, Mysore.
 
+### Links to Related Repositories:
+
+- Nyaya Khosha frontend: [https://github.com/Samskriti-Foundation/nyaya-dictionary-frontend-main](https://github.com/Samskriti-Foundation/nyaya-dictionary-frontend-main)
+  
+- Nyaya Backend: [https://github.com/Samskriti-Foundation/nyaya-dictionary-backend](https://github.com/Samskriti-Foundation/nyaya-dictionary-backend)
+
 ## Installation
 
 1. **Clone the Repository:**

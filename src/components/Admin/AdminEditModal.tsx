@@ -61,7 +61,7 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
     onClose()
   }
 
-  const handleInputChange = (key: string, value: any) => {
+  const handleInputChange = (key: keyof Props['dataItem'], value: any) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [key]: value,
@@ -80,8 +80,8 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
               <div key={key}>
                 <Text>{key}:</Text>
                 <Input
-                  value={formData[key]}
-                  onChange={(e) => handleInputChange(key, e.target.value)}
+                  value={String(formData[key as keyof typeof formData])}
+                  onChange={(e) => handleInputChange(key as keyof typeof formData, e.target.value)}
                 />
               </div>
             ))}

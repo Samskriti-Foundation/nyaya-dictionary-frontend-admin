@@ -54,6 +54,19 @@ export default function Login() {
     setIsLoading(true)
     let email = e.target.form[0].value
     let password = e.target.form[2].value
+
+    if (!email || !password) {
+      toast({
+        position: "top",
+        title: "Please enter email and password",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      setIsLoading(false)
+      return
+    }
+
     mutation.mutate({email, password})
   }
 

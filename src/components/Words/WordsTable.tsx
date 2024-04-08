@@ -24,7 +24,7 @@ import {
   PopoverHeader,
   Button,
   Checkbox,
-  
+  useDisclosure
 } from "@chakra-ui/react"
 
 import {
@@ -33,7 +33,6 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
-  ColumnDef,
   ColumnOrderState,
   SortingState
 } from '@tanstack/react-table'
@@ -45,14 +44,21 @@ import { useQuery } from "@tanstack/react-query"
 import { 
   FaSearch,
   FaSortAlphaDown,
-  FaSortAlphaDownAlt 
+  FaSortAlphaDownAlt,
+  FaPlusCircle
 } from "react-icons/fa";
+
+import WordAddModal from "./WordAddModal"
 
 export default function DictionaryTable() {
   const {data} = useQuery({
     queryKey: ["words"],
     queryFn: getWords
   })
+
+  console.log(data)
+
+  const { isOpen, onOpen, onClose } = useDisclosure()
 
   const columns = useMemo(() => [
     {
@@ -106,7 +112,7 @@ export default function DictionaryTable() {
                 <Td>{key}</Td>
                 <Td>
                   <Flex gap={2}>
-                    {getValue()[key].map((translation, j) => (
+                    {getValue()[key].map((translation: string, j: number) => (
                       <Text key={j}>{translation}</Text>
                     ))}
                   </Flex>
@@ -206,6 +212,7 @@ export default function DictionaryTable() {
             </PopoverBody>
           </PopoverContent>
         </Popover>
+        <Button bg = "primary" color = "foreground" boxShadow = "md" _hover = {{bg: "secondary"}} rightIcon={<FaPlusCircle/>} onClick = {onOpen}>Add</Button>
       </Flex>
       <TableContainer bg = "foreground" boxShadow = "md" rounded = "md" maxW = "80%" mx = "auto" overflow = "scroll">
         <Table variant = "striped">
@@ -258,6 +265,7 @@ export default function DictionaryTable() {
           </Tbody>
         </Table>
       </TableContainer>
+      <WordAddModal isOpen={isOpen} onClose={onClose}/>
     </Box>
   )
 }

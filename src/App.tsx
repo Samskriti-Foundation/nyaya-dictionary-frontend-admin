@@ -3,8 +3,9 @@ import { Route, Routes } from 'react-router-dom'
 
 import PrivateRoutes from './utils/PrivateRoutes'
 import LoginPage from './pages/LoginPage'
-import DictionaryPage from './pages/DictionaryPage'
-import ManagementPage from './pages/Management/ManagementPage'
+import WordsPage from './pages/WordsPage'
+import WordEditPage from './pages/WordEditPage'
+import ManagementPage from './pages/ManagementPage'
 
 function App() {
   return (
@@ -12,8 +13,9 @@ function App() {
       <Routes>
         <Route path = "/" element = {<LoginPage />}/>
         <Route element = {<PrivateRoutes />}>
-          <Route path = "/dictionary" element = {<DictionaryPage />}/>
-          <Route path = "/management" element = {<ManagementPage />}/>
+          <Route path = "/words" element = {<WordsPage />}/>
+          <Route path = "/words/:word" element = {<WordEditPage />}/>
+          <Route path = "/management/*" element = {<ManagementPage />}/>
         </Route>
       </Routes>
     </Box>

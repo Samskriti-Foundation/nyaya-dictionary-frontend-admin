@@ -37,7 +37,7 @@ export default function Navbar() {
           bgClip='text'
           ><Link 
             as = {NavLink}
-            to = "/dictionary"
+            to = "/words"
             _hover = {{textDecoration: "none"}}
             >Nyaya - Admin Panel
           </Link>
@@ -49,7 +49,7 @@ export default function Navbar() {
           >
           <Link
             as = {NavLink}
-            to = "/dictionary"
+            to = "/words"
             _hover = {{color: "secondary"}}
             _activeLink = {{color: "primary"}}
             >Dictionary

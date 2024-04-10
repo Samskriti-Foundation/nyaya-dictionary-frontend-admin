@@ -34,7 +34,7 @@ export default function Login() {
     mutationFn: loginUser,
     onSuccess: (data: {access_token: string, token_type: string}) => {
       localStorage.setItem('token', data.access_token)
-      navigate('/dictionary')
+      navigate('/words')
       setIsLoading(false)
     },
     onError: (res: AxiosError) => {

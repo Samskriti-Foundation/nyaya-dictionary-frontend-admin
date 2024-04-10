@@ -8,35 +8,32 @@ export interface Admin{
 }
 
 
-type Translations = {
-  [key: string]: string[];
-}
-
-export interface Meaning{
-  meaning: string,
-  meaning_id: number,
-  etymologies: [string],
-  derivations: [string],
-  translations: Translations,
-  reference_nyaya_texts: [
-    {
-      source: string,
-      description: string
-    }
-  ],
-  examples: [
-    {
-      example_sentence: string,
-      applicable_modern_context: string
-    }
-  ],
-  synonyms: [string],
-  antonyms: [string],
-}
-
 export interface Word{
+  id: number
+  sanskrit_word: string
+  english_transliteration: string
+  meaning_ids: [number]
+}
+
+
+export interface Meaning {
   id: number,
-  sanskrit_word: string,
-  english_transliteration: string,
-  meanings: [Meaning],
+  sanskrit_word_id: number
+  meaning: string
+}
+
+
+export interface Etymology{
+  id: number,
+  sanskrit_word_id: number
+  meaning_id: number
+  etymology: string
+}
+
+
+export interface Derivation{
+  id: number,
+  sanskrit_word_id: number
+  meaning_id: number
+  derivation: string
 }

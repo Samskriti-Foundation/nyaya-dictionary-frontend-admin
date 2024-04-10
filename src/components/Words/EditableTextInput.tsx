@@ -5,15 +5,23 @@ import {
   Flex,
   Editable,
   EditablePreview,
+  Textarea,
+  EditableTextarea,
+  Input,
   EditableInput,
-  Input
 } from "@chakra-ui/react"
 
 import { FaCheck } from "react-icons/fa";
 import {MdModeEdit, MdClose } from "react-icons/md";
 
 
-export default function EditableTextInput({defaultValue}: {defaultValue: string}) {
+interface EditableTextInputProps {
+  defaultValue: string
+  type: "input" | "textarea"
+}
+
+
+export default function EditableTextInput({defaultValue, type}: EditableTextInputProps) {
   function EditableControls() {
     const {
       isEditing,
@@ -25,7 +33,7 @@ export default function EditableTextInput({defaultValue}: {defaultValue: string}
     return isEditing ? (
       <ButtonGroup justifyContent='center' size='sm'>
         <IconButton aria-label = "check" icon={<FaCheck />} {...getSubmitButtonProps()} />
-        <IconButton aria-label = "close" icon={<MdClose />} {...getCancelButtonProps()} />
+        <IconButton aria-label = "close" icon={<MdClose />} {...getCancelButtonProps()} fontSize="xl"/>
       </ButtonGroup>
     ) : (
       <Flex justifyContent='center'>
@@ -38,11 +46,10 @@ export default function EditableTextInput({defaultValue}: {defaultValue: string}
     <Editable
       textAlign='center'
       defaultValue={defaultValue}
-      fontSize='2xl'
       isPreviewFocusable={false}
     >
       <EditablePreview />
-      <Input as={EditableInput} />
+      {type === "textarea" ? <Textarea as={EditableTextarea} textAlign= "left"/> : <Input as={EditableInput} textAlign= "left"/>}
       <EditableControls />
     </Editable>
   )

@@ -2,55 +2,72 @@ import {
   ButtonGroup,
   useEditableControls,
   IconButton,
-  Flex,
   Editable,
   EditablePreview,
   Textarea,
   EditableTextarea,
   Input,
   EditableInput,
+  useColorModeValue,
+  Tooltip,
 } from "@chakra-ui/react"
 
+
+import { useState } from "react";
 import { FaCheck } from "react-icons/fa";
-import {MdModeEdit, MdClose } from "react-icons/md";
+import { MdClose } from "react-icons/md";
 
 
 interface EditableTextInputProps {
   defaultValue: string
   type: "input" | "textarea"
+  setText: (text: string) => void
+  inlineBlock?: boolean
 }
 
 
-export default function EditableTextInput({defaultValue, type}: EditableTextInputProps) {
+export default function EditableTextInput({defaultValue, type, setText, inlineBlock = false}: EditableTextInputProps) {
+  const [inputValue, setInputValue] = useState(defaultValue)
+
   function EditableControls() {
     const {
       isEditing,
       getSubmitButtonProps,
       getCancelButtonProps,
-      getEditButtonProps,
     } = useEditableControls()
 
+
+    const handleSubmit = () => {
+      setText(inputValue)
+    }
+
+
     return isEditing ? (
-      <ButtonGroup justifyContent='center' size='sm'>
-        <IconButton aria-label = "check" icon={<FaCheck />} {...getSubmitButtonProps()} />
-        <IconButton aria-label = "close" icon={<MdClose />} {...getCancelButtonProps()} fontSize="xl"/>
+      <ButtonGroup justifyContent="center" size="sm" w="full" spacing={2} mt={2} display = {inlineBlock ? "inline-block" : "block"} textAlign='center'>
+        <IconButton aria-label = "Check" icon={<FaCheck />} {...getSubmitButtonProps({ onClick: handleSubmit })} />
+        <IconButton aria-label = "Close" icon={<MdClose />} {...getCancelButtonProps()} fontSize = "lg"/>
       </ButtonGroup>
-    ) : (
-      <Flex justifyContent='center'>
-        <IconButton aria-label = "edit" size='sm' icon={<MdModeEdit />} {...getEditButtonProps()} />
-      </Flex>
-    )
+    ) : null;
   }
   
   return (
     <Editable
-      textAlign='center'
+      textAlign='left'
       defaultValue={defaultValue}
-      isPreviewFocusable={false}
+      isPreviewFocusable={true}
+      selectAllOnFocus={false}
     >
-      <EditablePreview />
-      {type === "textarea" ? <Textarea as={EditableTextarea} textAlign= "left"/> : <Input as={EditableInput} textAlign= "left"/>}
+      <Tooltip label="Click to edit" shouldWrapChildren={true}>
+        <EditablePreview
+          py={2}
+          px={4}
+          _hover={{
+            background: useColorModeValue("gray.100", "gray.700")
+          }}
+          />
+      </Tooltip>
+      {type === "textarea" ? <Textarea as={EditableTextarea} onChange={(e) => setInputValue(e.target.value)}/> : <Input as={EditableInput}  onChange={(e) => setInputValue(e.target.value)}/>}
       <EditableControls />
     </Editable>
   )
-}
+} 

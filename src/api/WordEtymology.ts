@@ -4,7 +4,7 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
       Accept: "application/json",
-      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Bearer " + localStorage.getItem("token"),
   },
 })
 
@@ -27,17 +27,13 @@ export const getWordEtymology = async(word: string, meaning_id: number, etymolog
 
 
 export const addWordEtymology = async(word: string, meaning_id: number, etymology: string) => {
-  const response = await api.post(`${import.meta.env.VITE_API_URL}/words/${word}/${meaning_id}/etymologies`, {
-    etymology
-  })
+  const response = await api.post(`${import.meta.env.VITE_API_URL}/words/${word}/${meaning_id}/etymologies`, {etymology})
   return response.data
 }
 
 
 export const updateWordEtymology = async(word: string, meaning_id: number, etymology_id: number, etymology: string) => {
-  const response = await api.put(`${import.meta.env.VITE_API_URL}/words/${word}/${meaning_id}/etymologies/${etymology_id}`, {
-    etymology
-  })
+  const response = await api.put(`${import.meta.env.VITE_API_URL}/words/${word}/${meaning_id}/etymologies/${etymology_id}`, {etymology})
   return response.data
 }
 

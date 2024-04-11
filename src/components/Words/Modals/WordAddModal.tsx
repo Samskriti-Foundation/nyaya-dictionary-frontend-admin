@@ -12,7 +12,13 @@ import {
   Flex,
   } from '@chakra-ui/react'
 
-export default function WordAddModal({ isOpen, onClose } : any) {
+
+interface WordAddModalProps {
+  isOpen: boolean
+  onClose: () => void
+}
+
+export default function WordAddModal({ isOpen, onClose } : WordAddModalProps) {
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />

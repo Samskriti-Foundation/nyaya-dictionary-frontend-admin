@@ -54,6 +54,18 @@ export default function AddMeaningModal({ isOpen, onClose, word } : any) {
   })
   const handleSubmit = (e: any) => {
     e.preventDefault()
+
+    if(meaning === ""){
+      toast({
+        title: "Meaning cannot be empty",
+        position: "top",
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      })
+      return
+    }
+
     setIsLoading(true)
     mutation.mutate({word, meaning})
   }
@@ -78,9 +90,9 @@ export default function AddMeaningModal({ isOpen, onClose, word } : any) {
             </FormControl>
           </Flex>
         </ModalBody>
-        <ModalFooter>
-          <Button onClick = {(e: any) => {handleSubmit(e)}}>Submit</Button>
-          <Button onClick={onClose}>Cancel</Button>
+        <ModalFooter justifyContent="center" gap = "4">
+          <Button onClick = {(e: any) => {handleSubmit(e)}} bg = "tertiary" color = "background">Submit</Button>
+          <Button onClick={onClose} bg = "primary" color = "background">Cancel</Button>
         </ModalFooter>
       </ModalContent>)}
     </Modal>

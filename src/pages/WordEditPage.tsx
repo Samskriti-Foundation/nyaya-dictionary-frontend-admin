@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
 import { getWord } from "../api/WordApi"
 import BaseLayout from "../layouts/BaseLayout"
-import { Word } from "../types"
 
 import { 
   Box,
@@ -11,25 +10,33 @@ import {
   TabPanels,
   Tab,
   TabPanel,
-  Textarea,
   Heading,
-  Button,
   useDisclosure,
+  IconButton,
+  Flex,
 } from "@chakra-ui/react"
 
-import SingleWordEdit from "../components/Words/SingleWordEdit"
+import SingleWordMeaning from "../components/Words/SingleWordMeaning"
 import AddMeaningModal from "../components/Words/Modals/AddMeaningModal"
+import { MdDelete, MdEdit } from "react-icons/md"
+import { IoIosCreate } from "react-icons/io"
+import WordEditModal from "../components/Words/Modals/WordEditModal"
 
 
 export default function WordEditPage() {
-  const { word } = useParams();
+  let { word } = useParams();
+
+  if(word === undefined){
+    word = ""
+  }
 
   const { data: word_data } = useQuery({
     queryKey: ["words", word],
     queryFn: () => getWord(word),
   });
-
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  
+  const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
+  const {isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose} = useDisclosure()
 
   return (
     <BaseLayout>
@@ -38,12 +45,14 @@ export default function WordEditPage() {
           <Box w="100%">
             <Box textAlign="center" fontSize="3xl" fontWeight="bold" position = "relative">
               <Heading>{word_data.sanskrit_word} | {word_data.english_transliteration}</Heading>
-              <Box position = "absolute" right = "2" top = "0">
-                <Button size = "md" bg = "tertiary" onClick = {onOpen}>Add Meaning</Button>
-              </Box>
+              <Flex position = "absolute" right = "2" top = "2" gap = "2">
+                <IconButton aria-label = "Add Meaning" title = "Add Meaning" icon = {<IoIosCreate />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "blue" onClick = {onAddOpen}/>
+                <IconButton aria-label = "Edit" title = "Edit Word" icon = {<MdEdit />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "alphas" onClick = {onAddOpen}/>
+                <IconButton aria-label = "Delete" title = "Delete word" icon = {<MdDelete />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "red" onClick = {onAddOpen}/>
+              </Flex>
             </Box>
             <Box mt="6">
-              <Tabs isFitted variant="enclosed-colored">
+              <Tabs isFitted variant="enclosed-colored" isLazy>
                 <TabList mb="1em">
                   {word_data.meaning_ids?.map((meaning_id: number, index: number) => (
                     <Tab key={meaning_id}>Meaning {index + 1}</Tab>
@@ -52,7 +61,7 @@ export default function WordEditPage() {
                 <TabPanels>
                   {word_data.meaning_ids?.map((meaning_id: number) => (
                     <TabPanel key={meaning_id}>
-                      <SingleWordEdit word={word_data.sanskrit_word} meaning_id={meaning_id} />
+                      <SingleWordMeaning word={word_data.sanskrit_word} meaning_id={meaning_id} />
                     </TabPanel>
                   ))}
                 </TabPanels>
@@ -61,7 +70,8 @@ export default function WordEditPage() {
           </Box>
         )}
       </Box>
-      <AddMeaningModal word = {word} isOpen={isOpen} onClose={onClose}/>
+      <AddMeaningModal word = {word} isOpen={isAddOpen} onClose={onAddClose}/>
+      <WordEditModal word = {word} isOpen={isEditOpen} onClose={onEditClose}/>  
     </BaseLayout>
   );
 }

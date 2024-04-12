@@ -6,7 +6,8 @@ import {
   Icon,
   IconButton,
   Spinner,
-  Text
+  Text,
+  useDisclosure
 } from "@chakra-ui/react";
 
 import { Meaning } from "../../types";
@@ -21,6 +22,7 @@ import SingleWordDerivation from "./SingleWordDerivation";
 import SingleWordTranslation from "./SingleWordTranslation";
 import SingleWordExample from "./SingleWordExample";
 import SingleWordNyayaTextReference from "./SingleWordNyayaTextReference";
+import DeleteVerificationModal from "./Modals/DeleteVerificationModal";
 
 export default function SingleWordMeaning({ word, meaning_id }: { word: string, meaning_id: number }) {
   const { data, isLoading, error } = useQuery<Meaning>({
@@ -29,6 +31,7 @@ export default function SingleWordMeaning({ word, meaning_id }: { word: string, 
   });
 
   const [meaning, setMeaning] = useState(data?.meaning)
+  const {isOpen, onOpen, onClose} = useDisclosure()
 
   if (isLoading) {
     return (
@@ -42,12 +45,13 @@ export default function SingleWordMeaning({ word, meaning_id }: { word: string, 
     return <Text color="red">{error.message}</Text>;
   }
 
+
   return (
     <Box >
       <Box position="relative">
         <Heading size = "lg" p = "2" textAlign="center">Meaning</Heading>
         <Flex gap = "2" position="absolute" right = "2" top = "4">
-          <IconButton aria-label = "Delete" title = "Delete meaning" icon = {<MdDelete />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "red"/>
+          <IconButton aria-label = "Delete" title = "Delete meaning" icon = {<MdDelete />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "red" onClick={onOpen}/>
         </Flex>
       </Box>
       {data && (
@@ -67,6 +71,7 @@ export default function SingleWordMeaning({ word, meaning_id }: { word: string, 
           </Flex>
         </>
       )}
+      <DeleteVerificationModal isOpen = {isOpen} onClose = {onClose} word = {word} meaning_id = {meaning_id} meaning = {meaning}/>
     </Box>
   );
 }

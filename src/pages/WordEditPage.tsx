@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
 import { useParams } from "react-router-dom"
-import { getWord } from "../api/WordApi"
+import { deleteWord, getWord } from "../api/WordApi"
 import BaseLayout from "../layouts/BaseLayout"
 
 import { 
@@ -21,6 +21,7 @@ import AddMeaningModal from "../components/Words/Modals/AddMeaningModal"
 import { MdDelete, MdEdit } from "react-icons/md"
 import { IoIosCreate } from "react-icons/io"
 import WordEditModal from "../components/Words/Modals/WordEditModal"
+import DeleteVerificationModal from "../components/Words/Modals/DeleteVerificationModal"
 
 
 export default function WordEditPage() {
@@ -37,18 +38,19 @@ export default function WordEditPage() {
   
   const { isOpen: isAddOpen, onOpen: onAddOpen, onClose: onAddClose } = useDisclosure()
   const {isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose} = useDisclosure()
+  const {isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose} = useDisclosure()
 
   return (
     <BaseLayout>
       <Box w="80%" mx="auto" boxShadow="lg" mt="16" bg="foreground" rounded="md" p="4">
-        {word_data && (
+        {word_data ? (
           <Box w="100%">
             <Box textAlign="center" fontSize="3xl" fontWeight="bold" position = "relative">
               <Heading>{word_data.sanskrit_word} | {word_data.english_transliteration}</Heading>
               <Flex position = "absolute" right = "2" top = "2" gap = "2">
                 <IconButton aria-label = "Add Meaning" title = "Add Meaning" icon = {<IoIosCreate />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "blue" onClick = {onAddOpen}/>
-                <IconButton aria-label = "Edit" title = "Edit Word" icon = {<MdEdit />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "alphas" onClick = {onAddOpen}/>
-                <IconButton aria-label = "Delete" title = "Delete word" icon = {<MdDelete />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "red" onClick = {onAddOpen}/>
+                <IconButton aria-label = "Edit" title = "Edit Word" icon = {<MdEdit />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "alphas" onClick = {onEditOpen}/>
+                <IconButton aria-label = "Delete" title = "Delete word" icon = {<MdDelete />} size = "sm" fontSize = "xl" variant='outline' colorScheme = "red" onClick = {onDeleteOpen}/>
               </Flex>
             </Box>
             <Box mt="6">
@@ -68,10 +70,31 @@ export default function WordEditPage() {
               </Tabs>
             </Box>
           </Box>
-        )}
+        )
+        :
+        <Box>
+          <Heading textAlign="center">Word not found</Heading>
+        </Box>
+      }
       </Box>
-      <AddMeaningModal word = {word} isOpen={isAddOpen} onClose={onAddClose}/>
-      <WordEditModal word = {word} isOpen={isEditOpen} onClose={onEditClose}/>  
+      <Box>
+        <AddMeaningModal word = {word} isOpen={isAddOpen} onClose={onAddClose}/>
+        <WordEditModal dataItem = {
+          {
+            sanskrit_word: word_data?.sanskrit_word,
+            english_transliteration: word_data?.english_transliteration
+          }
+        } isOpen={isEditOpen} onClose={onEditClose}/>
+        <DeleteVerificationModal
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+          title = {`Are you sure you want to delete ${word_data?.sanskrit_word}?`}
+          description= "This will delete all the data associated with this word and it cannot be undone."
+          deleteFn={() => deleteWord(word)}
+          deleteQueryKeys={[word]}
+          word = {word}
+          />
+      </Box>
     </BaseLayout>
   );
 }

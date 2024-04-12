@@ -17,7 +17,7 @@ import {
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { createWordMeaning } from '../../../api/WordMeaning'
-import { useState } from 'react'
+import { BaseSyntheticEvent, useState } from 'react'
 import { AxiosError } from 'axios'
 
 export default function AddMeaningModal({ isOpen, onClose, word } : any) {
@@ -52,7 +52,7 @@ export default function AddMeaningModal({ isOpen, onClose, word } : any) {
       })
     }
   })
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
 
     if(meaning === ""){
@@ -74,7 +74,6 @@ export default function AddMeaningModal({ isOpen, onClose, word } : any) {
   return (
     <Modal isOpen={isOpen} onClose={onClose} size = "4xl">
       <ModalOverlay />
-
       {isLoading ? (
         <Flex w="100%" h="100%" justifyContent="center" alignItems="center">
           <Spinner color = "tertiary"/>
@@ -86,13 +85,13 @@ export default function AddMeaningModal({ isOpen, onClose, word } : any) {
         <ModalBody>
           <Flex gap = "4" direction = "column">
             <FormControl>
-              <Textarea placeholder = "Enter new meaning" required onChange = {(e: any) => {setMeaning(e.target.value)}}/>
+              <Textarea placeholder = "Enter new meaning" required onChange = {(e) => {setMeaning(e.target.value)}}/>
             </FormControl>
           </Flex>
         </ModalBody>
         <ModalFooter justifyContent="center" gap = "4">
-          <Button onClick = {(e: any) => {handleSubmit(e)}} bg = "tertiary" color = "background">Submit</Button>
-          <Button onClick={onClose} bg = "primary" color = "background">Cancel</Button>
+          <Button onClick = {(e) => {handleSubmit(e)}} bg = "tertiary.400" color = "background" _hover = {{bg: "tertiary.500"}}>Submit</Button>
+          <Button onClick={onClose} bg = "primary.400" color = "background" _hover = {{bg: "primary.500"}}>Cancel</Button>
         </ModalFooter>
       </ModalContent>)}
     </Modal>

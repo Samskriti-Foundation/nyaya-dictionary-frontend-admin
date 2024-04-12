@@ -73,36 +73,36 @@ export default function Login() {
   return (
     <Card maxW="md" p = {8} bg = "foreground" boxShadow="lg">
       <Stack spacing = {4}>
-        <Center color = "primary">
+        <Center color = "primary.400">
           <Icon as={FaBook} h = "32px" w = "32px"/>
           <Heading fontSize = "24px" pl = "12px">Nyaya Dictionary - Admin</Heading>
         </Center>
         <Heading>Login to you account</Heading>
-        <Divider orientation='horizontal' borderColor = "primary.900"/>
+        <Divider orientation='horizontal' borderColor = "primary.400"/>
         <form>
           <Stack spacing="5">
             <FormControl>
-              <FormLabel htmlFor="email" color = "primary.900">Email</FormLabel>
+              <FormLabel htmlFor="email">Email</FormLabel>
               <Input
                 id="email"
                 type="email"
-                borderColor = "primary"
+                borderColor = "primary.400"
                 placeholder="Enter your email"
-                _focus = {{borderColor: "primary"}}
-                _hover = {{borderColor: "secondary"}}
+                _focus = {{borderColor: "primary.900"}}
+                _hover = {{borderColor: "primary.900"}}
                 required
               />
             </FormControl>
             <PasswordField
-              borderColor = "primary"
+              borderColor = "primary.400"
               placeholder="Enter your password"
-              _focus = {{borderColor: "primary"}}
-              _hover = {{borderColor: "secondary"}}
+              _focus = {{borderColor: "primary.900"}}
+              _hover = {{borderColor: "primary.900"}}
             />
             <Button
-              bg = "primary"
+              bg = "primary.400"
               color= "foreground"
-              _hover={{bg: "secondary"}}
+              _hover={{bg: "primary.500"}}
               type = "submit"
               onClick={(e) => handleSubmit(e)}
               isLoading = {isLoading}

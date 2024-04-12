@@ -13,33 +13,35 @@ import {
   Button,
   useToast,
   Spinner,
+  FormErrorMessage,
+} from '@chakra-ui/react'
 
-  } from '@chakra-ui/react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { BaseSyntheticEvent, useState } from 'react'
-import { editWord } from '../../../api/WordApi'
+import { createWord } from '../../../api/WordApi'
 import { AxiosError } from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 
-interface WordAddModalProps {
+interface AddWordMeaningProps {
   isOpen: boolean
   onClose: () => void
-  dataItem: {
-    sanskrit_word: string,
-    english_transliteration: string
-  }
 }
-
-export default function WordEditModal({ isOpen, onClose, dataItem } : WordAddModalProps) {
+  
+export default function AddWordMeaning({ isOpen, onClose } : AddWordMeaningProps) {
   const [isLoading, setIsLoading] = useState(false)
+
+  const [sanskrit_word, setSanskritWord] = useState("")
+  const [english_transliteration, setEnglishTransliteration] = useState("")
   
   const toast = useToast()
   const queryClient = useQueryClient()
+  const navigate = useNavigate()
 
   const mutation = useMutation({
-    mutationFn: editWord,
+    mutationFn: createWord,
     onSuccess: (data: {message: string}) => {
-      queryClient.invalidateQueries({queryKey: ["words", dataItem.sanskrit_word]})
+      queryClient.invalidateQueries({queryKey: ["words"]})
       setIsLoading(false)
       onClose()
       toast({
@@ -48,6 +50,7 @@ export default function WordEditModal({ isOpen, onClose, dataItem } : WordAddMod
         duration: 3000,
         isClosable: true,
       })
+      navigate(`/words/${sanskrit_word}`)
     },
     onError: (res: AxiosError) => {
       toast({
@@ -64,9 +67,7 @@ export default function WordEditModal({ isOpen, onClose, dataItem } : WordAddMod
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
     setIsLoading(true)
-    const sanskrit_word = e.target[0].value
-    const english_transliteration = e.target[1].value
-    mutation.mutate({word: sanskrit_word, english_transliteration})
+    mutation.mutate({sanskrit_word, english_transliteration})
     onClose()
   }
 
@@ -76,26 +77,25 @@ export default function WordEditModal({ isOpen, onClose, dataItem } : WordAddMod
       {isLoading ?
         <Spinner/> :
         (<ModalContent>
-          <ModalHeader>Edit Word Details</ModalHeader>
+          <ModalHeader>Add Word Details</ModalHeader>
           <ModalCloseButton />
-          <form onSubmit = {(e) => handleSubmit(e)}>
             <ModalBody>
               <Flex gap = "4" direction = "column">
                 <FormControl>
                   <FormLabel>Sanskrit Word</FormLabel>
-                  <Input placeholder = "Enter Sanskrit word" required defaultValue={dataItem.sanskrit_word}/>
+                  <Input placeholder = "Enter Sanskrit word" required value = {sanskrit_word} onChange = {(e) => setSanskritWord(e.target.value)}/>
+                  <FormErrorMessage>Email is required.</FormErrorMessage>
                 </FormControl>
                 <FormControl>
                   <FormLabel>English Transliteration</FormLabel>
-                  <Input placeholder = "Enter English Transliteration" required defaultValue={dataItem.english_transliteration} />
+                  <Input placeholder = "Enter English Transliteration" value = {english_transliteration} onChange = {(e) => setEnglishTransliteration(e.target.value)}/>
                 </FormControl>
               </Flex>
             </ModalBody>
             <ModalFooter justifyContent="center" gap = "4">
-              <Button type = "submit" bg = "tertiary.400" color = "foreground" _hover = {{bg: "tertiary.500"}}>Submit</Button>
+              <Button onClick = {handleSubmit} bg = "tertiary.400" color = "foreground" _hover = {{bg: "tertiary.500"}}>Submit</Button>
               <Button onClick = {onClose} bg = "primary.400" color = "foreground" _hover = {{bg: "primary.500"}}>Close</Button>
             </ModalFooter>
-          </form>
       </ModalContent>
       )}
     </Modal>

@@ -80,7 +80,7 @@ export default function WordMeaning({
           />
           <Flex direction="column" gap="2" mt="6">
             <Divider />
-            <WordEtymology />
+            <WordEtymology word={word} meaning_id={meaning_id} />
           </Flex>
         </>
       )}

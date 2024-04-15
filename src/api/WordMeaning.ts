@@ -18,13 +18,7 @@ export const getWordMeaning = async (word: string, meaning_id: number) => {
   return response.data
 }
 
-export const createWordMeaning = async ({
-  word,
-  meaning,
-}: {
-  word: string
-  meaning: string
-}) => {
+export const createWordMeaning = async (word: string, meaning: string) => {
   const response = await api.post(`/words/${word}/meanings`, { meaning })
   return response.data
 }

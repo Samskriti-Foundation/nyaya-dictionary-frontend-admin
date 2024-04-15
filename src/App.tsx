@@ -4,7 +4,7 @@ import { Route, Routes } from 'react-router-dom'
 import PrivateRoutes from './utils/PrivateRoutes'
 import LoginPage from './pages/LoginPage'
 import WordsPage from './pages/WordsPage'
-import WordEditPage from './pages/WordEditPage'
+import SingleWordPage from './pages/SingleWordPage'
 import ManagementPage from './pages/ManagementPage'
 
 function App() {
@@ -14,7 +14,7 @@ function App() {
         <Route path = "/" element = {<LoginPage />}/>
         <Route element = {<PrivateRoutes />}>
           <Route path = "/words" element = {<WordsPage />}/>
-          <Route path = "/words/:word" element = {<WordEditPage />}/>
+          <Route path = "/words/:word" element = {<SingleWordPage />}/>
           <Route path = "/management/*" element = {<ManagementPage />}/>
         </Route>
       </Routes>

@@ -3,7 +3,7 @@ import WordsTable from "../components/Words/WordsTable"
 import BaseLayout from "../layouts/BaseLayout"
 
 import { Button, Flex, Input, useDisclosure } from "@chakra-ui/react"
-import AddWordModal from "../components/Words/Modals/AddWordModal"
+import AddWordModal from "../components/Words/WordModals/AddWordModal"
 
 export default function WordsPage() {
   const [searchTerm, setSearchTerm] = useState("")

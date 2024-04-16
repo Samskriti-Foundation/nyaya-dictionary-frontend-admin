@@ -1,7 +1,7 @@
-import { BaseSyntheticEvent, useEffect, useState } from 'react'
+import { BaseSyntheticEvent, useEffect, useState } from "react"
 
-import { useQueryClient , useMutation } from "@tanstack/react-query"
-import { updateAdmin } from "../../api/AdminApi"
+import { useQueryClient, useMutation } from "@tanstack/react-query"
+import { updateAdmin } from "../../api/admin.api"
 
 import {
   Flex,
@@ -14,14 +14,14 @@ import {
   ModalCloseButton,
   Button,
   Text,
-  Input
-} from '@chakra-ui/react'
+  Input,
+} from "@chakra-ui/react"
 
-import { useToast } from '@chakra-ui/react'
+import { useToast } from "@chakra-ui/react"
 
 interface Props {
-  isOpen: boolean;
-  onClose: () => void;
+  isOpen: boolean
+  onClose: () => void
   dataItem: {
     first_name: string
     last_name: string
@@ -30,38 +30,37 @@ interface Props {
   }
 }
 
-
-export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
-  const [formData, setFormData] = useState({...dataItem})
+export default function AdminEditModal({ isOpen, onClose, dataItem }: Props) {
+  const [formData, setFormData] = useState({ ...dataItem })
 
   useEffect(() => {
-    setFormData({...dataItem})
+    setFormData({ ...dataItem })
   }, [dataItem])
 
   const queryClient = useQueryClient()
   const toast = useToast()
-  
+
   const mutation = useMutation({
     mutationFn: updateAdmin,
-    onSuccess: () => queryClient.invalidateQueries({queryKey: ["admins"]}),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admins"] }),
     onError: (res: any) => {
       toast({
         position: "top",
         title: `Error: ${res.response.data.detail}`,
-        status: 'error',
+        status: "error",
         duration: 3000,
         isClosable: true,
       })
-    }
+    },
   })
 
   const handleSubmit = (e: BaseSyntheticEvent) => {
     e.preventDefault()
-    mutation.mutate({data: formData})
+    mutation.mutate({ data: formData })
     onClose()
   }
 
-  const handleInputChange = (key: keyof Props['dataItem'], value: any) => {
+  const handleInputChange = (key: keyof Props["dataItem"], value: any) => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [key]: value,
@@ -72,7 +71,7 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
     <Modal isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
-        <form onSubmit = {(e) => handleSubmit(e)}>
+        <form onSubmit={(e) => handleSubmit(e)}>
           <ModalHeader>Edit Details</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
@@ -81,15 +80,22 @@ export default function AdminEditModal({isOpen, onClose, dataItem} : Props) {
                 <Text>{key}:</Text>
                 <Input
                   value={String(formData[key as keyof typeof formData])}
-                  onChange={(e) => handleInputChange(key as keyof typeof formData, e.target.value)}
+                  onChange={(e) =>
+                    handleInputChange(
+                      key as keyof typeof formData,
+                      e.target.value
+                    )
+                  }
                 />
               </div>
             ))}
           </ModalBody>
           <ModalFooter>
-            <Flex justifyContent='center' w='100%' gap = {4}>
-              <Button type='submit'>Submit</Button>
-              <Button colorScheme='red' mr={3} onClick={onClose}>Close</Button>
+            <Flex justifyContent="center" w="100%" gap={4}>
+              <Button type="submit">Submit</Button>
+              <Button colorScheme="red" mr={3} onClick={onClose}>
+                Close
+              </Button>
             </Flex>
           </ModalFooter>
         </form>

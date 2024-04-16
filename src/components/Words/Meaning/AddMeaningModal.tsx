@@ -1,12 +1,12 @@
-import { FormControl, FormLabel, Textarea } from "@chakra-ui/react";
-import AddModal from "../BaseModals/AddModal";
-import { useState } from "react";
-import { createWordMeaning } from "../../../api/WordMeaning";
+import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { useState } from "react"
+import { useCreateWordMeaningMutation } from "../../../api/meaning.api"
+import BaseModal from "../WordModals/BaseModal"
 
 interface AddMeaningModalProps {
-  word: string;
-  isOpen: boolean;
-  onClose: () => void;
+  word: string
+  isOpen: boolean
+  onClose: () => void
 }
 
 export default function AddMeaningModal({
@@ -14,16 +14,53 @@ export default function AddMeaningModal({
   isOpen,
   onClose,
 }: AddMeaningModalProps) {
-  const [meaning, setMeaning] = useState("");
+  const [meaning, setMeaning] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const toast = useToast()
+
+  const wordMutation = useCreateWordMeaningMutation(word)
+
+  const handleSubmit = async () => {
+    setIsLoading(true)
+
+    wordMutation.mutate(
+      {
+        word,
+        meaning,
+      },
+      {
+        onSuccess: () => {
+          setMeaning("")
+          toast({
+            title: "Meaning has been added successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          })
+          onClose()
+          setIsLoading(false)
+        },
+        onError: () => {
+          toast({
+            title: "Error adding meaning",
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
+          setIsLoading(false)
+        },
+      }
+    )
+  }
 
   return (
-    <AddModal
+    <BaseModal
       title="Add new meaning"
-      mutParams={{ word, meaning }}
-      mutationFn={createWordMeaning}
-      queryKey={["words", word]}
       isOpen={isOpen}
       onClose={onClose}
+      handleSubmit={handleSubmit}
+      isLoading={isLoading}
     >
       <FormControl>
         <FormLabel>New meaning</FormLabel>
@@ -33,6 +70,6 @@ export default function AddMeaningModal({
           onChange={(e) => setMeaning(e.target.value)}
         />
       </FormControl>
-    </AddModal>
-  );
+    </BaseModal>
+  )
 }

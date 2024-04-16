@@ -1,12 +1,10 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { getCurrentUser } from './user';
+import { Navigate, Outlet } from "react-router-dom"
+import { getCurrentUser } from "./user"
 
 function PrivateRoutes() {
-  let user = getCurrentUser()
-  
-  return (
-    user ? <Outlet /> : <Navigate to="/"/>
-  );
+  const user = localStorage.getItem("token") ?? null
+
+  return user ? <Outlet /> : <Navigate to="/" />
 }
 
-export default PrivateRoutes;
+export default PrivateRoutes

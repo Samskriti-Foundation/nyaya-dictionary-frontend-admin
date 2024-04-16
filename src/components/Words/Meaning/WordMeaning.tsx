@@ -4,26 +4,20 @@ import {
   Flex,
   Heading,
   IconButton,
-  Spinner,
-  Text,
   useDisclosure,
+  useToast,
 } from "@chakra-ui/react"
 
-import { Meaning } from "../../../types"
-import { deleteWordMeaning, getWordMeaning } from "../../../api/WordMeaning"
-import { useQuery } from "@tanstack/react-query"
+import {
+  useGetWordMeaningQuery,
+  useUpdateWordMeaningMutation,
+} from "../../../api/meaning.api"
 import EditableTextInput from "../EditableTextInput"
 
-import { useState } from "react"
 import { MdDelete } from "react-icons/md"
-import DeleteModal from "../BaseModals/DeleteModal"
-import WordEtymology from "../Etymology/WordEtymology"
-// import SingleWordEtymology from "../Etymology/Etymology";
-// import SingleWordDerivation from "../Derivation/WordDerivation";
-// import SingleWordTranslation from "../Translation/SingleWordTranslation";
-// import SingleWordExample from "../Example/Example";
-// import SingleWordNyayaTextReference from "../NyayaTextReference/SingleWordNyayaTextReference";
-// import DeleteVerificationModal from "../Modals/DeleteVerificationModal";
+import LoadingSpinner from "../../LoadingSpinner"
+import ErrorMessage from "../../ErrorMessage"
+import DeleteMeaningModal from "./DeleteMeaningModal"
 
 export default function WordMeaning({
   word,
@@ -32,25 +26,41 @@ export default function WordMeaning({
   word: string
   meaning_id: number
 }) {
-  const { data, isLoading, error } = useQuery<Meaning>({
-    queryKey: ["words", word, meaning_id],
-    queryFn: () => getWordMeaning(word, meaning_id),
-  })
-
-  const [meaning, setMeaning] = useState(data?.meaning)
+  const { isLoading, error, data } = useGetWordMeaningQuery(word, meaning_id)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  if (isLoading) {
-    return (
-      <Box w="100%" textAlign="center">
-        <Spinner />
-      </Box>
+  const toast = useToast()
+
+  const meaningMutation = useUpdateWordMeaningMutation(word, meaning_id)
+
+  const handleEdit = (value: string) => {
+    meaningMutation.mutate(
+      { meaning: value },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Meaning has been edited successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          })
+          onClose()
+        },
+        onError: (error) => {
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
+        },
+      }
     )
   }
 
-  if (error) {
-    return <Text color="red">{error.message}</Text>
-  }
+  isLoading && <LoadingSpinner />
+
+  error && <ErrorMessage error={error.message} />
 
   return (
     <Box>
@@ -76,23 +86,22 @@ export default function WordMeaning({
           <EditableTextInput
             defaultValue={data.meaning}
             type="textarea"
-            setText={setMeaning}
+            setText={(value) => {
+              handleEdit(value)
+            }}
           />
           <Flex direction="column" gap="2" mt="6">
             <Divider />
-            <WordEtymology word={word} meaning_id={meaning_id} />
+            {/* <WordEtymology word={word} meaning_id={meaning_id} /> */}
           </Flex>
         </>
       )}
-      <DeleteModal
+
+      <DeleteMeaningModal
+        word={word}
+        meaning_id={meaning_id}
         isOpen={isOpen}
         onClose={onClose}
-        title="Are you sure you want to delete this meaning?"
-        description="All the data associated with this meaning will be deleted. This action cannot be undone."
-        deleteFn={deleteWordMeaning}
-        queryKey={["words", word]}
-        mutParams={{ word: word, meaning_id: meaning_id }}
-        deletemessage="Meaning deleted successfully"
       />
     </Box>
   )

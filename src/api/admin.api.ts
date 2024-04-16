@@ -4,16 +4,14 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   headers: {
     Accept: "application/json",
-    "Authorization": "Bearer " + localStorage.getItem("token"),
+    Authorization: "Bearer " + localStorage.getItem("token"),
   },
 })
 
-
 export const getAdmins = async () => {
-  const response = await api.get(`${import.meta.env.VITE_API_URL}/admins`)
+  const response = await api.get(`/admins`)
   return response.data
 }
-
 
 type Admin = {
   first_name: string
@@ -22,9 +20,9 @@ type Admin = {
   is_superuser: boolean
 }
 
-export const updateAdmin = async ({data}: {data: Admin}) => {
-  const response = await api.put(`${import.meta.env.VITE_API_URL}/admins/`, {
-    ...data
+export const updateAdmin = async ({ data }: { data: Admin }) => {
+  const response = await api.put(`/admins/`, {
+    ...data,
   })
   return response.data
 }

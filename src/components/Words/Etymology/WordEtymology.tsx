@@ -4,7 +4,7 @@ import { Etymology } from "../../../types"
 import {
   deleteWordEtymologies,
   getWordEtymologies,
-} from "../../../api/WordEtymology"
+} from "../../../api/etymology.api"
 import DeleteModal from "../BaseModals/DeleteModal"
 import { useQuery } from "@tanstack/react-query"
 

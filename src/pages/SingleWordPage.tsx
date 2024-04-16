@@ -1,7 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
-import { deleteWord, getWord } from "../api/WordApi";
-import BaseLayout from "../layouts/BaseLayout";
+import { useParams } from "react-router-dom"
+import BaseLayout from "../layouts/BaseLayout"
 
 import {
   Box,
@@ -14,48 +12,48 @@ import {
   useDisclosure,
   IconButton,
   Flex,
-  FormControl,
-  FormLabel,
-  Textarea,
-} from "@chakra-ui/react";
+} from "@chakra-ui/react"
 
-import WordMeaning from "../components/Words/Meaning/WordMeaning";
-// import AddMeaningModal from "../components/Words/Meaning/AddMeaningModal"
-import { MdDelete, MdEdit } from "react-icons/md";
-import { IoIosCreate } from "react-icons/io";
-// import EditWordModal from "../components/Words/Modals/EditWordModal"
-// import DeleteVerificationModal from "../components/Words/Modals/DeleteVerificationModal"
-import DeleteModal from "../components/Words/BaseModals/DeleteModal";
-import AddWordModal from "../components/Words/WordModals/AddWordModal";
-import AddMeaningModal from "../components/Words/Meaning/AddMeaningModal";
+import WordMeaning from "../components/Words/Meaning/WordMeaning"
+import { MdDelete, MdEdit } from "react-icons/md"
+import { IoIosCreate } from "react-icons/io"
+import DeleteWordModal from "../components/Words/WordModals/DeleteWordModal"
+import { useGetWordQuery } from "../api/words.api"
+import LoadingSpinner from "../components/LoadingSpinner"
+import ErrorMessage from "../components/ErrorMessage"
+import EditWordModal from "../components/Words/WordModals/EditWordModal"
+import AddMeaningModal from "../components/Words/Meaning/AddMeaningModal"
 
 export default function SingleWordPage() {
-  let { word } = useParams();
+  let { word } = useParams()
 
   if (word === undefined) {
-    word = "";
+    word = ""
   }
 
-  const { data: word_data } = useQuery({
-    queryKey: ["words", word],
-    queryFn: () => getWord(word),
-  });
+  const { isLoading, error, data } = useGetWordQuery(word)
 
   const {
     isOpen: isAddOpen,
     onOpen: onAddOpen,
     onClose: onAddClose,
-  } = useDisclosure();
+  } = useDisclosure()
+
   const {
     isOpen: isEditOpen,
     onOpen: onEditOpen,
     onClose: onEditClose,
-  } = useDisclosure();
+  } = useDisclosure()
+
   const {
     isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
-  } = useDisclosure();
+  } = useDisclosure()
+
+  isLoading && <LoadingSpinner />
+
+  error && <ErrorMessage error={error.message} />
 
   return (
     <BaseLayout>
@@ -68,7 +66,7 @@ export default function SingleWordPage() {
         rounded="md"
         p="4"
       >
-        {word_data ? (
+        {data ? (
           <Box w="100%">
             <Box
               textAlign="center"
@@ -77,7 +75,7 @@ export default function SingleWordPage() {
               position="relative"
             >
               <Heading>
-                {word_data.sanskrit_word} | {word_data.english_transliteration}
+                {data.sanskrit_word} | {data.english_transliteration}
               </Heading>
               <Flex position="absolute" right="2" top="2" gap="2">
                 <IconButton
@@ -115,17 +113,17 @@ export default function SingleWordPage() {
             <Box mt="6">
               <Tabs isFitted variant="enclosed-colored" isLazy>
                 <TabList mb="1em">
-                  {word_data.meaning_ids?.map(
+                  {data.meaning_ids?.map(
                     (meaning_id: number, index: number) => (
                       <Tab key={meaning_id}>Meaning {index + 1}</Tab>
                     )
                   )}
                 </TabList>
                 <TabPanels>
-                  {word_data.meaning_ids?.map((meaning_id: number) => (
-                    <TabPanel key={meaning_id}>
+                  {data.meaning_ids?.map((meaning_id: number, index) => (
+                    <TabPanel key={index}>
                       <WordMeaning
-                        word={word_data.sanskrit_word}
+                        word={data.sanskrit_word}
                         meaning_id={meaning_id}
                       />
                     </TabPanel>
@@ -141,36 +139,21 @@ export default function SingleWordPage() {
         )}
       </Box>
       <Box>
-        {/* <AddMeaningModal word = {word} isOpen={isAddOpen} onClose={onAddClose}/>
-        <EditWordModal dataItem = {
-          {
-            sanskrit_word: word_data?.sanskrit_word,
-            english_transliteration: word_data?.english_transliteration
-          }
-        } isOpen={isEditOpen} onClose={onEditClose}/>
-        <DeleteVerificationModal
-          isOpen={isDeleteOpen}
-          onClose={onDeleteClose}
-          title = {`Are you sure you want to delete ${word_data?.sanskrit_word}?`}
-          description= "This will delete all the data associated with this word and it cannot be undone."
-          deleteFn={() => deleteWord(word)}
-          deleteQueryKeys={[word]}
-          word = {word}
-          /> */}
-        <DeleteModal
-          isOpen={isDeleteOpen}
-          onClose={onDeleteClose}
-          word={word}
-          title={`Are you sure you want to delete ${word_data?.sanskrit_word}?`}
-          description="This will delete all the data associated with this word and it cannot be undone."
-          deleteFn={deleteWord}
-          mutParams={word}
-          queryKey={["words", word]}
-          deletemessage="Word deleted successfully"
-          navigateBack
-        />
         <AddMeaningModal word={word} isOpen={isAddOpen} onClose={onAddClose} />
+        <DeleteWordModal
+          word={word}
+          isOpen={isDeleteOpen}
+          onClose={onDeleteClose}
+        />
+        {data && (
+          <EditWordModal
+            sanskrit_word={word}
+            english_transliteration={data.english_transliteration}
+            isOpen={isEditOpen}
+            onClose={onEditClose}
+          />
+        )}
       </Box>
     </BaseLayout>
-  );
+  )
 }

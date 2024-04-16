@@ -1,57 +1,59 @@
 import { Flex, FormControl, FormLabel, Input, useToast } from "@chakra-ui/react"
-
-import { useState } from "react"
 import BaseModal from "./BaseModal"
-import { useCreateWordMutation } from "../../../api/words.api"
+import { useState } from "react"
+import { useUpdateWordMutation } from "../../../api/words.api"
 
-interface AddWordModalProps {
+interface EditWordModalProps {
   isOpen: boolean
   onClose: () => void
+  sanskrit_word: string
+  english_transliteration: string
 }
 
-export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
-  const [sanskrit_word, setSanskritWord] = useState("")
-  const [english_transliteration, setEnglishTransliteration] = useState("")
+export default function EditWordModal({
+  isOpen,
+  onClose,
+  sanskrit_word,
+  english_transliteration,
+}: EditWordModalProps) {
+  const [sanskritWord, setSanskritWord] = useState(sanskrit_word)
+  const [englishTransliteration, setEnglishTransliteration] = useState(
+    english_transliteration
+  )
 
   const [isLoading, setIsLoading] = useState(false)
-
   const toast = useToast()
+  const wordMutation = useUpdateWordMutation(sanskrit_word)
 
-  const wordMutation = useCreateWordMutation()
-
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     setIsLoading(true)
 
     wordMutation.mutate(
       {
-        sanskrit_word,
-        english_transliteration,
+        word: sanskritWord,
+        english_transliteration: englishTransliteration,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           setSanskritWord("")
           setEnglishTransliteration("")
           toast({
-            title: "Success",
-            description: data.message,
+            title: "Word has been edited successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
-          setIsLoading(false)
           onClose()
+          setIsLoading(false)
         },
-
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message,
+            title: error.message,
             status: "error",
             duration: 3000,
             isClosable: true,
           })
           setIsLoading(false)
-          onClose()
         },
       }
     )
@@ -59,7 +61,7 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
 
   return (
     <BaseModal
-      title="Add Word Details"
+      title="Edit Word Details"
       isOpen={isOpen}
       onClose={onClose}
       isLoading={isLoading}
@@ -70,16 +72,15 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
           <FormLabel>Sanskrit Word</FormLabel>
           <Input
             placeholder="Enter Sanskrit word"
-            required
-            value={sanskrit_word}
+            value={sanskritWord}
             onChange={(e) => setSanskritWord(e.target.value)}
           />
         </FormControl>
         <FormControl>
           <FormLabel>English Transliteration</FormLabel>
           <Input
-            placeholder="(Optional) Will be automatically created if not provided."
-            value={english_transliteration}
+            placeholder="Enter English Transliteration"
+            value={englishTransliteration}
             onChange={(e) => setEnglishTransliteration(e.target.value)}
           />
         </FormControl>

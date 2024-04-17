@@ -12,11 +12,9 @@ import {
   Tooltip,
 } from "@chakra-ui/react"
 
-
-import { useState } from "react";
-import { FaCheck } from "react-icons/fa";
-import { MdClose } from "react-icons/md";
-
+import { useState } from "react"
+import { FaCheck } from "react-icons/fa"
+import { MdClose } from "react-icons/md"
 
 interface EditableTextInputProps {
   defaultValue: string
@@ -25,34 +23,50 @@ interface EditableTextInputProps {
   inlineBlock?: boolean
 }
 
-
-export default function EditableTextInput({defaultValue, type, setText, inlineBlock = false}: EditableTextInputProps) {
+export default function EditableTextInput({
+  defaultValue,
+  type,
+  setText,
+  inlineBlock = false,
+}: EditableTextInputProps) {
   const [inputValue, setInputValue] = useState(defaultValue)
 
   function EditableControls() {
-    const {
-      isEditing,
-      getSubmitButtonProps,
-      getCancelButtonProps,
-    } = useEditableControls()
-
+    const { isEditing, getSubmitButtonProps, getCancelButtonProps } =
+      useEditableControls()
 
     const handleSubmit = () => {
       setText(inputValue)
     }
 
-
     return isEditing ? (
-      <ButtonGroup justifyContent="center" size="sm" w="full" spacing={2} mt={2} display = {inlineBlock ? "inline-block" : "block"} textAlign='center'>
-        <IconButton aria-label = "Check" icon={<FaCheck />} {...getSubmitButtonProps({ onClick: handleSubmit })} />
-        <IconButton aria-label = "Close" icon={<MdClose />} {...getCancelButtonProps()} fontSize = "lg"/>
+      <ButtonGroup
+        justifyContent="center"
+        size="sm"
+        w="full"
+        spacing={2}
+        mt={2}
+        display={inlineBlock ? "inline-block" : "block"}
+        textAlign="center"
+      >
+        <IconButton
+          aria-label="Check"
+          icon={<FaCheck />}
+          {...getSubmitButtonProps({ onClick: handleSubmit })}
+        />
+        <IconButton
+          aria-label="Close"
+          icon={<MdClose />}
+          {...getCancelButtonProps()}
+          fontSize="lg"
+        />
       </ButtonGroup>
-    ) : null;
+    ) : null
   }
-  
+
   return (
     <Editable
-      textAlign='left'
+      textAlign="left"
       defaultValue={defaultValue}
       isPreviewFocusable={true}
       selectAllOnFocus={false}
@@ -62,12 +76,22 @@ export default function EditableTextInput({defaultValue, type, setText, inlineBl
           py={2}
           px={4}
           _hover={{
-            background: useColorModeValue("gray.100", "gray.700")
+            background: useColorModeValue("gray.100", "gray.700"),
           }}
-          />
+        />
       </Tooltip>
-      {type === "textarea" ? <Textarea as={EditableTextarea} onChange={(e) => setInputValue(e.target.value)}/> : <Input as={EditableInput}  onChange={(e) => setInputValue(e.target.value)}/>}
+      {type === "textarea" ? (
+        <Textarea
+          as={EditableTextarea}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+      ) : (
+        <Input
+          as={EditableInput}
+          onChange={(e) => setInputValue(e.target.value)}
+        />
+      )}
       <EditableControls />
     </Editable>
   )
-} 
+}

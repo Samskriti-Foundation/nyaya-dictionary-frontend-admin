@@ -64,10 +64,9 @@ export default function Login() {
           setIsLoading(false)
         },
         onError: (error) => {
-          console.error("Login error:", error)
           toast({
             position: "top",
-            title: "Login failed",
+            title: error.message,
             status: "error",
             duration: 3000,
             isClosable: true,

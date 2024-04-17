@@ -1,12 +1,23 @@
-import { Box, Flex, Heading, IconButton, useDisclosure } from "@chakra-ui/react"
-import { MdDelete } from "react-icons/md"
-import { Etymology } from "../../../types"
 import {
-  deleteWordEtymologies,
-  getWordEtymologies,
+  Box,
+  Flex,
+  Heading,
+  IconButton,
+  useDisclosure,
+  useToast,
+} from "@chakra-ui/react"
+import { MdDelete } from "react-icons/md"
+import {
+  useDeleteWordEtymologyMutation,
+  useGetWordEtymologiesQuery,
+  useUpdateWordEtymologyMutation,
 } from "../../../api/etymology.api"
-import DeleteModal from "../BaseModals/DeleteModal"
-import { useQuery } from "@tanstack/react-query"
+import LoadingSpinner from "../../LoadingSpinner"
+import ErrorMessage from "../../ErrorMessage"
+import DeleteEtymologyModal from "./DeleteEtymologyModal"
+import EditableTextInput from "../EditableTextInput"
+import AddEtymologyModal from "./AddEtymologyModal"
+import { IoIosCreate } from "react-icons/io"
 
 export default function WordEtymology({
   word,
@@ -15,13 +26,83 @@ export default function WordEtymology({
   word: string
   meaning_id: number
 }) {
-  const { data, isLoading, error } = useQuery<Etymology[]>({
-    queryKey: ["words", word, meaning_id],
-    queryFn: () => getWordEtymologies(word, meaning_id),
-  })
-
   const { isOpen, onOpen, onClose } = useDisclosure()
-  console.log(data)
+
+  const {
+    isOpen: isDeleteOpen,
+    onOpen: onDeleteOpen,
+    onClose: onDeleteClose,
+  } = useDisclosure()
+
+  const toast = useToast()
+
+  const { isLoading, error, data } = useGetWordEtymologiesQuery(
+    word,
+    meaning_id
+  )
+
+  const updatedEtymologyMutation = useUpdateWordEtymologyMutation(
+    word,
+    meaning_id
+  )
+
+  const handleUpdate = (etymology_id: number, etymology: string) => {
+    updatedEtymologyMutation.mutate(
+      { etymology_id, etymology },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Etymology has been edited successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          })
+        },
+        onError: (error) => {
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
+        },
+      }
+    )
+  }
+
+  const deleteEtymologyMudation = useDeleteWordEtymologyMutation(
+    word,
+    meaning_id
+  )
+
+  const handleDelete = (etymology_id: number) => {
+    deleteEtymologyMudation.mutate(
+      { etymology_id },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Etymology has been deleted successfully",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          })
+        },
+        onError: (error) => {
+          toast({
+            title: error.message,
+            status: "error",
+            duration: 3000,
+            isClosable: true,
+          })
+        },
+      }
+    )
+  }
+
+  {
+    isLoading && <LoadingSpinner />
+    error && <ErrorMessage error={error.message} />
+  }
 
   return (
     <Box>
@@ -31,32 +112,57 @@ export default function WordEtymology({
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
           <IconButton
+            aria-label="Add"
+            icon={<IoIosCreate />}
+            size="sm"
+            fontSize="xl"
+            variant="outline"
+            colorScheme="blue"
+            onClick={onOpen}
+          />
+          <IconButton
             aria-label="Delete"
-            title="Delete meaning"
+            title={
+              data?.length ?? 0 > 0
+                ? "Delete all etymologies"
+                : "No etymologies"
+            }
+            isDisabled={!(data?.length || 0)}
             icon={<MdDelete />}
             size="sm"
             fontSize="xl"
             variant="outline"
             colorScheme="red"
-            onClick={onOpen}
+            onClick={onDeleteOpen}
           />
         </Flex>
         <Box>
           {data &&
             data.map((etymology) => (
-              <Box key={etymology.id}>{etymology.etymology}</Box>
+              <EditableTextInput
+                key={etymology.id}
+                defaultValue={etymology.etymology}
+                setText={(value) => {
+                  value === ""
+                    ? handleDelete(etymology.id)
+                    : handleUpdate(etymology.id, value)
+                }}
+                type="textarea"
+              />
             ))}
         </Box>
       </Box>
-      <DeleteModal
+      <AddEtymologyModal
         isOpen={isOpen}
         onClose={onClose}
-        title="Are you sure you want to delete these etymologies?"
-        description="All the etymologies associated with this meaning will be deleted. This action cannot be undone."
-        deleteFn={deleteWordEtymologies}
-        queryKey={["words", word, meaning_id]}
-        mutParams={{ word, meaning_id }}
-        deletemessage="Etymologies deleted successfully"
+        word={word}
+        meaning_id={meaning_id}
+      />
+      <DeleteEtymologyModal
+        word={word}
+        meaning_id={meaning_id}
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
       />
     </Box>
   )

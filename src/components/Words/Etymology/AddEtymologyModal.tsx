@@ -1,32 +1,33 @@
 import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
-import { useState } from "react"
-import { useCreateWordMeaningMutation } from "../../../api/meaning.api"
 import BaseModal from "../WordModals/BaseModal"
+import { useState } from "react"
+import { useCreateWordEtymologyMutation } from "../../../api/etymology.api"
 
-interface AddMeaningModalProps {
-  word: string
+interface AddEtymologyModalProps {
   isOpen: boolean
   onClose: () => void
+  word: string
+  meaning_id: number
 }
 
-export default function AddMeaningModal({
-  word,
+export default function AddEtymologyModal({
   isOpen,
   onClose,
-}: AddMeaningModalProps) {
-  const [meaning, setMeaning] = useState("")
+  word,
+  meaning_id,
+}: AddEtymologyModalProps) {
+  const [etymology, setEtymology] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
   const toast = useToast()
 
-  const wordMutation = useCreateWordMeaningMutation(word)
-
-  const handleSubmit = async () => {
+  const etymologyMutation = useCreateWordEtymologyMutation(word, meaning_id)
+  const handleSubmit = () => {
     setIsLoading(true)
 
-    if (!meaning) {
+    if (!etymology) {
       toast({
-        title: "Meaning cannot be empty",
+        title: "Etymology cannot be empty",
         status: "error",
         duration: 3000,
         isClosable: true,
@@ -35,16 +36,13 @@ export default function AddMeaningModal({
       return
     }
 
-    wordMutation.mutate(
-      {
-        word,
-        meaning,
-      },
+    etymologyMutation.mutate(
+      { etymology },
       {
         onSuccess: () => {
-          setMeaning("")
+          setEtymology("")
           toast({
-            title: "Meaning has been added successfully",
+            title: "Etymologies has been added successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -52,9 +50,9 @@ export default function AddMeaningModal({
           onClose()
           setIsLoading(false)
         },
-        onError: () => {
+        onError: (error) => {
           toast({
-            title: "Error adding meaning",
+            title: error.message,
             status: "error",
             duration: 3000,
             isClosable: true,
@@ -67,18 +65,18 @@ export default function AddMeaningModal({
 
   return (
     <BaseModal
-      title="Add new meaning"
+      title="Add new etymology"
       isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}
       isLoading={isLoading}
     >
       <FormControl>
-        <FormLabel>New meaning</FormLabel>
+        <FormLabel>New etymology</FormLabel>
         <Textarea
           placeholder="Enter new meaning"
-          value={meaning}
-          onChange={(e) => setMeaning(e.target.value)}
+          value={etymology}
+          onChange={(e) => setEtymology(e.target.value)}
         />
       </FormControl>
     </BaseModal>

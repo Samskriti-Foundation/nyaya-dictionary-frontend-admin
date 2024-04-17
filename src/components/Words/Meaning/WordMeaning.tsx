@@ -18,6 +18,9 @@ import { MdDelete } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import DeleteMeaningModal from "./DeleteMeaningModal"
+import WordEtymology from "../Etymology/WordEtymology"
+import WordDerivation from "../Derivation/WordDerivation"
+import WordTranslation from "../Translation/WordTranslation"
 
 export default function WordMeaning({
   word,
@@ -31,10 +34,10 @@ export default function WordMeaning({
 
   const toast = useToast()
 
-  const meaningMutation = useUpdateWordMeaningMutation(word, meaning_id)
+  const editMeaningMutation = useUpdateWordMeaningMutation(word, meaning_id)
 
   const handleEdit = (value: string) => {
-    meaningMutation.mutate(
+    editMeaningMutation.mutate(
       { meaning: value },
       {
         onSuccess: () => {
@@ -58,14 +61,18 @@ export default function WordMeaning({
     )
   }
 
-  isLoading && <LoadingSpinner />
+  {
+    isLoading && <LoadingSpinner />
+  }
 
-  error && <ErrorMessage error={error.message} />
+  {
+    error && <ErrorMessage error={error.message} />
+  }
 
   return (
     <Box>
       <Box position="relative">
-        <Heading size="lg" p="2" textAlign="center">
+        <Heading size="xl" p="2" textAlign="center">
           Meaning
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
@@ -77,6 +84,7 @@ export default function WordMeaning({
             fontSize="xl"
             variant="outline"
             colorScheme="red"
+            isDisabled={data ? false : true}
             onClick={onOpen}
           />
         </Flex>
@@ -86,13 +94,15 @@ export default function WordMeaning({
           <EditableTextInput
             defaultValue={data.meaning}
             type="textarea"
-            setText={(value) => {
-              handleEdit(value)
-            }}
+            setText={(value) => handleEdit(value)}
           />
           <Flex direction="column" gap="2" mt="6">
             <Divider />
-            {/* <WordEtymology word={word} meaning_id={meaning_id} /> */}
+            <WordEtymology word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordDerivation word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordTranslation word={word} meaning_id={meaning_id} />
           </Flex>
         </>
       )}

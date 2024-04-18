@@ -11,6 +11,7 @@ import {
   Heading,
   useDisclosure,
   IconButton,
+  Text,
   Flex,
 } from "@chakra-ui/react"
 
@@ -111,25 +112,31 @@ export default function SingleWordPage() {
               </Flex>
             </Box>
             <Box mt="6">
-              <Tabs isFitted variant="enclosed-colored" isLazy>
-                <TabList mb="1em">
-                  {data.meaning_ids?.map(
-                    (meaning_id: number, index: number) => (
-                      <Tab key={meaning_id}>Meaning {index + 1}</Tab>
-                    )
-                  )}
-                </TabList>
-                <TabPanels>
-                  {data.meaning_ids?.map((meaning_id: number, index) => (
-                    <TabPanel key={index}>
-                      <WordMeaning
-                        word={data.sanskrit_word}
-                        meaning_id={meaning_id}
-                      />
-                    </TabPanel>
-                  ))}
-                </TabPanels>
-              </Tabs>
+              {data.meaning_ids.length > 0 ? (
+                <Tabs isFitted variant="enclosed-colored" isLazy>
+                  <TabList mb="1em">
+                    {data.meaning_ids?.map(
+                      (meaning_id: number, index: number) => (
+                        <Tab key={meaning_id}>Meaning {index + 1}</Tab>
+                      )
+                    )}
+                  </TabList>
+                  <TabPanels>
+                    {data.meaning_ids?.map((meaning_id: number, index) => (
+                      <TabPanel key={index}>
+                        <WordMeaning
+                          word={data.sanskrit_word}
+                          meaning_id={meaning_id}
+                        />
+                      </TabPanel>
+                    ))}
+                  </TabPanels>
+                </Tabs>
+              ) : (
+                <Text fontSize="2xl" textAlign="center">
+                  No meanings found
+                </Text>
+              )}
             </Box>
           </Box>
         ) : (

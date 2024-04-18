@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Text,
   Heading,
   IconButton,
   useDisclosure,
@@ -141,7 +142,7 @@ export default function WordDerivation({
           />
         </Flex>
         <Box>
-          {data &&
+          {data && data.length > 0 ? (
             data.map((derivation) => (
               <EditableTextInput
                 key={derivation.id}
@@ -153,7 +154,12 @@ export default function WordDerivation({
                 }}
                 type="textarea"
               />
-            ))}
+            ))
+          ) : (
+            <Text textAlign="center" p="2" fontSize="2xl">
+              No derivations found
+            </Text>
+          )}
         </Box>
       </Box>
       <AddDerivationModal

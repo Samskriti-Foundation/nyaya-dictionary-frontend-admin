@@ -91,3 +91,101 @@ export const useCreateWordExampleMutation = (
     },
   })
 }
+
+export const updateWordExample = async (
+  word: string,
+  meaning_id: number,
+  example_id: number,
+  example_sentence: string,
+  applicable_modern_context: string
+) => {
+  const response = await api.put(
+    `/words/${word}/${meaning_id}/examples/${example_id}`,
+    {
+      example_sentence,
+      applicable_modern_context,
+    }
+  )
+  return response.data
+}
+
+export const useUpdateWordExampleMutation = (
+  word: string,
+  meaning_id: number
+) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      example_id,
+      example_sentence,
+      applicable_modern_context,
+    }: {
+      example_id: number
+      example_sentence: string
+      applicable_modern_context: string
+    }) =>
+      updateWordExample(
+        word,
+        meaning_id,
+        example_id,
+        example_sentence,
+        applicable_modern_context
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["words", word, meaning_id, "examples"],
+      })
+    },
+  })
+}
+
+export const deleteWordExample = async (
+  word: string,
+  meaning_id: number,
+  example_id: number
+) => {
+  const response = await api.delete(
+    `/words/${word}/${meaning_id}/examples/${example_id}`
+  )
+  return response.data
+}
+
+export const useDeleteWordExampleMutation = (
+  word: string,
+  meaning_id: number
+) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ example_id }: { example_id: number }) =>
+      deleteWordExample(word, meaning_id, example_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["words", word, meaning_id, "examples"],
+      })
+    },
+  })
+}
+
+export const deleteWordExamples = async (word: string, meaning_id: number) => {
+  const response = await api.delete(`/words/${word}/${meaning_id}/examples`)
+  return response.data
+}
+
+export const useDeleteWordExamplesMutation = (
+  word: string,
+  meaning_id: number
+) => {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ meaning_id }: { meaning_id: number }) =>
+      deleteWordExamples(word, meaning_id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["words", word, meaning_id, "examples"],
+      })
+    },
+  })
+}

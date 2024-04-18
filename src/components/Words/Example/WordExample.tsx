@@ -8,15 +8,15 @@ import {
   useDisclosure,
 } from "@chakra-ui/react"
 import { MdDelete } from "react-icons/md"
-import AddTranslationModal from "./AddTranslationModal"
 import { IoIosCreate } from "react-icons/io"
-import DeleteTranslationsModal from "./DeleteTranslationsModal"
-import { useGetWordTranslationsQuery } from "../../../api/translation.api"
 import ErrorMessage from "../../ErrorMessage"
 import LoadingSpinner from "../../LoadingSpinner"
-import TranslationTable from "./TranslationTable"
+import DeleteExamplesModal from "./DeleteExamplesModal"
+import AddExampleModal from "./AddExampleModal"
+import ExampleTable from "./ExampleTable"
+import { useGetWordExamplesQuery } from "../../../api/example.api"
 
-export default function WordTranslation({
+export default function WordExample({
   word,
   meaning_id,
 }: {
@@ -30,10 +30,7 @@ export default function WordTranslation({
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  const { data, isLoading, error } = useGetWordTranslationsQuery(
-    word,
-    meaning_id
-  )
+  const { data, isLoading, error } = useGetWordExamplesQuery(word, meaning_id)
 
   {
     isLoading && <LoadingSpinner />
@@ -44,12 +41,12 @@ export default function WordTranslation({
     <Box>
       <Box position="relative">
         <Heading size="lg" p="2" textAlign="center">
-          Translation
+          Example
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
           <IconButton
             aria-label="Add"
-            title="Add translation"
+            title="Add example"
             icon={<IoIosCreate />}
             size="sm"
             fontSize="xl"
@@ -59,7 +56,7 @@ export default function WordTranslation({
           />
           <IconButton
             aria-label="Delete"
-            title={data?.length ? "Delete all translations" : "No translations"}
+            title={data?.length ? "Delete all examples" : "No examples"}
             isDisabled={!(data?.length || 0)}
             icon={<MdDelete />}
             size="sm"
@@ -71,20 +68,20 @@ export default function WordTranslation({
         </Flex>
         <Spacer h="2" />
         {data && data.length > 0 ? (
-          <TranslationTable word={word} meaning_id={meaning_id} />
+          <ExampleTable word={word} meaning_id={meaning_id} />
         ) : (
           <Text textAlign="center" p="2" fontSize="2xl">
-            No translations found
+            No examples found
           </Text>
         )}
       </Box>
-      <AddTranslationModal
+      <AddExampleModal
         isOpen={isOpen}
         onClose={onClose}
         word={word}
         meaning_id={meaning_id}
       />
-      <DeleteTranslationsModal
+      <DeleteExamplesModal
         isOpen={isDeleteOpen}
         onClose={onDeleteClose}
         word={word}

@@ -1,6 +1,7 @@
 import {
   Box,
   Flex,
+  Text,
   Heading,
   IconButton,
   useDisclosure,
@@ -137,7 +138,7 @@ export default function WordEtymology({
           />
         </Flex>
         <Box>
-          {data &&
+          {data && data.length > 0 ? (
             data.map((etymology) => (
               <EditableTextInput
                 key={etymology.id}
@@ -149,7 +150,12 @@ export default function WordEtymology({
                 }}
                 type="textarea"
               />
-            ))}
+            ))
+          ) : (
+            <Text textAlign="center" p="2" fontSize="2xl">
+              No etymologies found
+            </Text>
+          )}
         </Box>
       </Box>
       <AddEtymologyModal

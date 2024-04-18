@@ -21,6 +21,8 @@ import DeleteMeaningModal from "./DeleteMeaningModal"
 import WordEtymology from "../Etymology/WordEtymology"
 import WordDerivation from "../Derivation/WordDerivation"
 import WordTranslation from "../Translation/WordTranslation"
+import WordExample from "../Example/WordExample"
+import WordNyayaTextReference from "../NyayaTextReference/WordNyayaTextReference"
 
 export default function WordMeaning({
   word,
@@ -103,6 +105,10 @@ export default function WordMeaning({
             <WordDerivation word={word} meaning_id={meaning_id} />
             <Divider />
             <WordTranslation word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordExample word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordNyayaTextReference word={word} meaning_id={meaning_id} />
           </Flex>
         </>
       )}

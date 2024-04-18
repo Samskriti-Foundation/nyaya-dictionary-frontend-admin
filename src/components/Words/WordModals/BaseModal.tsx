@@ -34,7 +34,9 @@ export default function BaseModal({
       <ModalContent>
         <ModalHeader textAlign="center">{title}</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>{children}</ModalBody>
+        <ModalBody w="100%" textAlign="justify">
+          {children}
+        </ModalBody>
         <ModalFooter justifyContent="center" gap="4">
           <Button
             onClick={handleSubmit}

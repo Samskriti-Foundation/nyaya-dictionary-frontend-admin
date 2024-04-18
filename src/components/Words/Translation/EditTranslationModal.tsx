@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
 import {
   Box,
@@ -9,29 +9,40 @@ import {
   Textarea,
   useToast,
 } from "@chakra-ui/react"
-import { useCreateWordTranslationMutation } from "../../../api/translation.api"
+import { useUpdateWordTranslationMutation } from "../../../api/translation.api"
 import { indianLanguages } from "../../../utils/lang"
 
-interface AddTranslationModalProps {
+interface EditTranslationModalProps {
   isOpen: boolean
   onClose: () => void
   word: string
   meaning_id: number
+  translation_id: number
+  defaultLanguage: string
+  defaultTranslation: string
 }
 
-export default function AddTranslationModal({
+export default function EditTranslationModal({
   isOpen,
   onClose,
   word,
   meaning_id,
-}: AddTranslationModalProps) {
-  const [language, setLanguage] = useState("English")
-  const [translation, setTranslation] = useState("")
+  translation_id,
+  defaultLanguage,
+  defaultTranslation,
+}: EditTranslationModalProps) {
+  const [language, setLanguage] = useState(defaultLanguage)
+  const [translation, setTranslation] = useState(defaultTranslation)
   const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    setLanguage(defaultLanguage)
+    setTranslation(defaultTranslation)
+  }, [defaultLanguage, defaultTranslation])
 
   const toast = useToast()
 
-  const translationMutation = useCreateWordTranslationMutation(word, meaning_id)
+  const translationMutation = useUpdateWordTranslationMutation(word, meaning_id)
 
   const handleSubmit = () => {
     setIsLoading(true)
@@ -46,12 +57,14 @@ export default function AddTranslationModal({
       })
       return
     }
-    setTranslation("")
 
     translationMutation.mutate(
-      { language, translation },
+      { translation_id, language, translation },
       {
         onSuccess: () => {
+          setTranslation("")
+          setLanguage("")
+
           toast({
             title: "Translation has been added successfully",
             status: "success",
@@ -72,13 +85,14 @@ export default function AddTranslationModal({
         },
       }
     )
+
     setIsLoading(false)
     onClose()
   }
 
   return (
     <BaseModal
-      title="Add new translation"
+      title="Edit translation"
       isOpen={isOpen}
       onClose={onClose}
       handleSubmit={handleSubmit}

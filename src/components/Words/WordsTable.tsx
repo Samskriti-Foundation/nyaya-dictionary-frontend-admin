@@ -74,7 +74,7 @@ export default function WordsTable({
 
   return (
     <TableContainer bg="foreground" boxShadow="lg" rounded="md">
-      <Table variant="striped">
+      <Table variant="simple">
         <Thead>
           {table.getHeaderGroups().map((headerGroup) => (
             <Tr key={headerGroup.id}>
@@ -93,11 +93,12 @@ export default function WordsTable({
         </Thead>
         <Tbody>
           {data &&
-            table.getRowModel().rows.map((row) => (
+            table.getRowModel().rows.map((row, index) => (
               <Tr
                 key={row.id}
                 onClick={() => navigate(`/words/${row.original.sanskrit_word}`)}
-                _hover={{ cursor: "pointer", bg: "#E2E8F0" }}
+                _hover={{ cursor: "pointer", bg: "gray.200" }}
+                bg={index % 2 === 0 ? "gray.100" : "white"}
               >
                 {row.getVisibleCells().map((cell) => (
                   <Td key={cell.id}>

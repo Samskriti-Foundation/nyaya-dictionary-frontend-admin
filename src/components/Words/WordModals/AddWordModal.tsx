@@ -28,12 +28,11 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
         english_transliteration,
       },
       {
-        onSuccess: (data) => {
+        onSuccess: () => {
           setSanskritWord("")
           setEnglishTransliteration("")
           toast({
-            title: "Success",
-            description: data.message,
+            title: "Word added successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
@@ -44,8 +43,7 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
 
         onError: (error) => {
           toast({
-            title: "Error",
-            description: error.message,
+            title: error.message,
             status: "error",
             duration: 3000,
             isClosable: true,

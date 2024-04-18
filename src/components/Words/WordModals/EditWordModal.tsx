@@ -35,8 +35,6 @@ export default function EditWordModal({
       },
       {
         onSuccess: () => {
-          setSanskritWord("")
-          setEnglishTransliteration("")
           toast({
             title: "Word has been edited successfully",
             status: "success",

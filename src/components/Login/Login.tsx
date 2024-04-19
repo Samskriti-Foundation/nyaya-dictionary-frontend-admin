@@ -13,13 +13,9 @@ import {
 
 import { FaBook } from "react-icons/fa"
 import { PasswordField } from "./PasswordField"
-import { useLoginDBManagerQuery } from "../../api/login.api"
-
 import { BaseSyntheticEvent } from "react"
-
 import { useState } from "react"
 import { useToast } from "@chakra-ui/react"
-import { useNavigate } from "react-router-dom"
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -28,9 +24,6 @@ export default function Login() {
   const [password, setPassword] = useState("")
 
   const toast = useToast()
-  const navigate = useNavigate()
-
-  const loginMutation = useLoginDBManagerQuery()
 
   const handleSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault()
@@ -47,34 +40,6 @@ export default function Login() {
       setIsLoading(false)
       return
     }
-
-    loginMutation.mutate(
-      { username: email, password },
-      {
-        onSuccess: (data: { access_token: string; token_type: string }) => {
-          navigate("/words")
-          toast({
-            position: "top",
-            title: "Login successful",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
-          localStorage.setItem("token", data.access_token)
-          setIsLoading(false)
-        },
-        onError: (error) => {
-          toast({
-            position: "top",
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
-          setIsLoading(false)
-        },
-      }
-    )
   }
 
   return (

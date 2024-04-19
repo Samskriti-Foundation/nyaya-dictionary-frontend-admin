@@ -38,19 +38,22 @@ import {
   InputRightElement,
 } from "@chakra-ui/react"
 
-import { getAdmins } from "../../api/admin.api"
+import { useGetDBManagersQuery } from "../../api/dbmanagers.api"
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import AdminEditModal from "./AdminEditModal"
+import AdminEditModal from "./AddDBManagerModal"
 import { Admin } from "../../types"
+import LoadingSpinner from "../LoadingSpinner"
+import ErrorMessage from "../ErrorMessage"
 
-export default function AdminTable() {
-  const { data } = useQuery({
-    queryKey: ["admins"],
-    queryFn: getAdmins,
-  })
-
+export default function DBManagersTable() {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const { data, isLoading, error } = useGetDBManagersQuery()
+
+  {
+    isLoading && <LoadingSpinner />
+    error && <ErrorMessage error={error.message} />
+  }
 
   const [columns] = useState<ColumnDef<Admin>[]>([
     {

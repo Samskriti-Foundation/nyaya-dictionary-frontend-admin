@@ -1,5 +1,4 @@
 import { Navigate, Outlet } from "react-router-dom"
-import { getCurrentUser } from "./user"
 
 function PrivateRoutes() {
   const user = localStorage.getItem("token") ?? null

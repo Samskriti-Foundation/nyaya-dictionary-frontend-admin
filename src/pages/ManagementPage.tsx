@@ -37,8 +37,8 @@ export default function ManagementPage() {
           </List>
         </Drawer>
         <Routes>
-          {/* <Route path = "/" element = {<Admin/>}/> */}
-          {/* <Route path = "/reports" element = {<Report/>}/> */}
+          <Route path="/" element={<Admin />} />
+          <Route path="/reports" element={<Report />} />
         </Routes>
       </Flex>
     </BaseLayout>

@@ -5,7 +5,7 @@ import PrivateRoutes from "./utils/PrivateRoutes"
 import LoginPage from "./pages/LoginPage"
 import WordsPage from "./pages/WordsPage"
 import SingleWordPage from "./pages/SingleWordPage"
-import ManagementPage from "./pages/ManagementPage"
+// import ManagementPage from "./pages/ManagementPage"
 
 function App() {
   return (
@@ -15,7 +15,7 @@ function App() {
         <Route element={<PrivateRoutes />}>
           <Route path="/words" element={<WordsPage />} />
           <Route path="/words/:word" element={<SingleWordPage />} />
-          <Route path="/management/*" element={<ManagementPage />} />
+          {/* <Route path="/management/*" element={<ManagementPage />} /> */}
         </Route>
       </Routes>
     </Box>

@@ -6,6 +6,8 @@ import {
   IconButton,
   useDisclosure,
   useToast,
+  OrderedList,
+  ListItem,
 } from "@chakra-ui/react"
 import { IoIosCreate } from "react-icons/io"
 import { MdDelete } from "react-icons/md"
@@ -141,26 +143,28 @@ export default function WordDerivation({
             onClick={onDeleteOpen}
           />
         </Flex>
-        <Box>
+        <OrderedList>
           {data && data.length > 0 ? (
             data.map((derivation) => (
-              <EditableTextInput
-                key={derivation.id}
-                defaultValue={derivation.derivation}
-                setText={(value) => {
-                  value === ""
-                    ? handleDelete(derivation.id)
-                    : handleUpdate(derivation.id, value)
-                }}
-                type="textarea"
-              />
+              <ListItem>
+                <EditableTextInput
+                  key={derivation.id}
+                  defaultValue={derivation.derivation}
+                  setText={(value) => {
+                    value === ""
+                      ? handleDelete(derivation.id)
+                      : handleUpdate(derivation.id, value)
+                  }}
+                  type="textarea"
+                />
+              </ListItem>
             ))
           ) : (
             <Text textAlign="center" p="2" fontSize="2xl">
               No derivations found
             </Text>
           )}
-        </Box>
+        </OrderedList>
       </Box>
       <AddDerivationModal
         isOpen={isOpen}

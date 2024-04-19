@@ -23,6 +23,8 @@ import WordDerivation from "../Derivation/WordDerivation"
 import WordTranslation from "../Translation/WordTranslation"
 import WordExample from "../Example/WordExample"
 import WordNyayaTextReference from "../NyayaTextReference/WordNyayaTextReference"
+import WordSynonmys from "../Synonyms/WordSynonmys"
+import WordAntonyms from "../Antonyms/WordAntonyms"
 
 export default function WordMeaning({
   word,
@@ -109,6 +111,10 @@ export default function WordMeaning({
             <WordExample word={word} meaning_id={meaning_id} />
             <Divider />
             <WordNyayaTextReference word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordSynonmys word={word} meaning_id={meaning_id} />
+            <Divider />
+            <WordAntonyms word={word} meaning_id={meaning_id} />
           </Flex>
         </>
       )}

@@ -3,6 +3,7 @@ import { Flex, FormControl, FormLabel, Input, useToast } from "@chakra-ui/react"
 import { useState } from "react"
 import BaseModal from "./BaseModal"
 import { useCreateWordMutation } from "../../../api/words.api"
+import { useNavigate } from "react-router-dom"
 
 interface AddWordModalProps {
   isOpen: boolean
@@ -16,6 +17,7 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
   const toast = useToast()
+  const navigate = useNavigate()
 
   const wordMutation = useCreateWordMutation()
 
@@ -29,15 +31,16 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
       },
       {
         onSuccess: () => {
-          setSanskritWord("")
-          setEnglishTransliteration("")
+          setIsLoading(false)
+          navigate(`/words/${sanskrit_word}`)
           toast({
             title: "Word added successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
-          setIsLoading(false)
+          setSanskritWord("")
+          setEnglishTransliteration("")
           onClose()
         },
 

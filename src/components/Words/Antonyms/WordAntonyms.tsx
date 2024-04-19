@@ -4,25 +4,25 @@ import {
   Text,
   Heading,
   IconButton,
-  useDisclosure,
-  useToast,
   ListItem,
   OrderedList,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react"
-import { MdDelete } from "react-icons/md"
+import { IoIosCreate } from "react-icons/io"
+import EditableTextInput from "../EditableTextInput"
 import {
-  useDeleteWordEtymologyMutation,
-  useGetWordEtymologiesQuery,
-  useUpdateWordEtymologyMutation,
-} from "../../../api/etymology.api"
+  useDeleteWordAntonymMutation,
+  useGetWordAntonymsQuery,
+  useUpdateWordAntonymMutation,
+} from "../../../api/antonyms.api"
+import { MdDelete } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
-import DeleteEtymologyModal from "./DeleteEtymologyModal"
-import EditableTextInput from "../EditableTextInput"
-import AddEtymologyModal from "./AddEtymologyModal"
-import { IoIosCreate } from "react-icons/io"
+import AddAntonymModal from "./AddAntonymModal"
+import DeleteAntonymsModal from "./DeleteAntonymsModal"
 
-export default function WordEtymology({
+export default function WordAntonyms({
   word,
   meaning_id,
 }: {
@@ -39,27 +39,22 @@ export default function WordEtymology({
 
   const toast = useToast()
 
-  const { isLoading, error, data } = useGetWordEtymologiesQuery(
-    word,
-    meaning_id
-  )
+  const { isLoading, error, data } = useGetWordAntonymsQuery(word, meaning_id)
 
-  const updatedEtymologyMutation = useUpdateWordEtymologyMutation(
-    word,
-    meaning_id
-  )
+  const updateAntonymMutation = useUpdateWordAntonymMutation(word, meaning_id)
 
-  const handleUpdate = (etymology_id: number, etymology: string) => {
-    updatedEtymologyMutation.mutate(
-      { etymology_id, etymology },
+  const handleUpdate = (antonym_id: number, antonym: string) => {
+    updateAntonymMutation.mutate(
+      { antonym_id, antonym },
       {
         onSuccess: () => {
           toast({
-            title: "Etymology has been edited successfully",
+            title: "Antonym has been edited successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
+          onClose()
         },
         onError: (error) => {
           toast({
@@ -73,22 +68,20 @@ export default function WordEtymology({
     )
   }
 
-  const deleteEtymologyMudation = useDeleteWordEtymologyMutation(
-    word,
-    meaning_id
-  )
+  const deleteAntonymMutation = useDeleteWordAntonymMutation(word, meaning_id)
 
-  const handleDelete = (etymology_id: number) => {
-    deleteEtymologyMudation.mutate(
-      { etymology_id },
+  const handleDelete = (antonym_id: number) => {
+    deleteAntonymMutation.mutate(
+      { antonym_id },
       {
         onSuccess: () => {
           toast({
-            title: "Etymology has been deleted successfully",
+            title: "Antonym has been deleted successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
+          onDeleteClose()
         },
         onError: (error) => {
           toast({
@@ -111,7 +104,7 @@ export default function WordEtymology({
     <Box>
       <Box position="relative">
         <Heading size="lg" p="2" textAlign="center">
-          Etymology
+          Antonyms
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
           <IconButton
@@ -121,14 +114,13 @@ export default function WordEtymology({
             fontSize="xl"
             variant="outline"
             colorScheme="blue"
+            title="Add antonym"
             onClick={onOpen}
           />
           <IconButton
             aria-label="Delete"
             title={
-              data?.length ?? 0 > 0
-                ? "Delete all etymologies"
-                : "No etymologies"
+              data?.length ?? 0 > 0 ? "Delete all antonyms" : "No antonyms"
             }
             isDisabled={!(data?.length || 0)}
             icon={<MdDelete />}
@@ -141,14 +133,15 @@ export default function WordEtymology({
         </Flex>
         <OrderedList>
           {data && data.length > 0 ? (
-            data.map((etymology) => (
-              <ListItem key={etymology.id}>
+            data.map((antonym) => (
+              <ListItem key={antonym.id} display="inline-block">
                 <EditableTextInput
-                  defaultValue={etymology.etymology}
+                  key={antonym.id}
+                  defaultValue={antonym.antonym}
                   setText={(value) => {
                     value === ""
-                      ? handleDelete(etymology.id)
-                      : handleUpdate(etymology.id, value)
+                      ? handleDelete(antonym.id)
+                      : handleUpdate(antonym.id, value)
                   }}
                   type="textarea"
                 />
@@ -156,18 +149,18 @@ export default function WordEtymology({
             ))
           ) : (
             <Text textAlign="center" p="2" fontSize="2xl">
-              No etymologies found
+              No antonyms found
             </Text>
           )}
         </OrderedList>
       </Box>
-      <AddEtymologyModal
+      <AddAntonymModal
         isOpen={isOpen}
         onClose={onClose}
         word={word}
         meaning_id={meaning_id}
       />
-      <DeleteEtymologyModal
+      <DeleteAntonymsModal
         word={word}
         meaning_id={meaning_id}
         isOpen={isDeleteOpen}

@@ -1,28 +1,28 @@
 import {
   Box,
   Flex,
-  Text,
   Heading,
   IconButton,
-  useDisclosure,
-  useToast,
   ListItem,
   OrderedList,
+  Text,
+  useDisclosure,
+  useToast,
 } from "@chakra-ui/react"
+import { IoIosCreate } from "react-icons/io"
 import { MdDelete } from "react-icons/md"
+import EditableTextInput from "../EditableTextInput"
+import AddSynonymModal from "./AddSynonymModal"
 import {
-  useDeleteWordEtymologyMutation,
-  useGetWordEtymologiesQuery,
-  useUpdateWordEtymologyMutation,
-} from "../../../api/etymology.api"
+  useDeleteWordSynonymMutation,
+  useGetWordSynonymsQuery,
+  useUpdateWordSynonymMutation,
+} from "../../../api/synonyms.api"
+import DeleteSynonymsModal from "./DeleteSynonymsModal"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
-import DeleteEtymologyModal from "./DeleteEtymologyModal"
-import EditableTextInput from "../EditableTextInput"
-import AddEtymologyModal from "./AddEtymologyModal"
-import { IoIosCreate } from "react-icons/io"
 
-export default function WordEtymology({
+export default function WordSynonmys({
   word,
   meaning_id,
 }: {
@@ -39,27 +39,22 @@ export default function WordEtymology({
 
   const toast = useToast()
 
-  const { isLoading, error, data } = useGetWordEtymologiesQuery(
-    word,
-    meaning_id
-  )
+  const { isLoading, error, data } = useGetWordSynonymsQuery(word, meaning_id)
 
-  const updatedEtymologyMutation = useUpdateWordEtymologyMutation(
-    word,
-    meaning_id
-  )
+  const updatedSynonymMutation = useUpdateWordSynonymMutation(word, meaning_id)
 
-  const handleUpdate = (etymology_id: number, etymology: string) => {
-    updatedEtymologyMutation.mutate(
-      { etymology_id, etymology },
+  const handleUpdate = (synonym_id: number, synonym: string) => {
+    updatedSynonymMutation.mutate(
+      { synonym_id, synonym },
       {
         onSuccess: () => {
           toast({
-            title: "Etymology has been edited successfully",
+            title: "Synonym has been edited successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
+          onClose()
         },
         onError: (error) => {
           toast({
@@ -73,22 +68,20 @@ export default function WordEtymology({
     )
   }
 
-  const deleteEtymologyMudation = useDeleteWordEtymologyMutation(
-    word,
-    meaning_id
-  )
+  const deleteSynonymMutation = useDeleteWordSynonymMutation(word, meaning_id)
 
-  const handleDelete = (etymology_id: number) => {
-    deleteEtymologyMudation.mutate(
-      { etymology_id },
+  const handleDelete = (synonym_id: number) => {
+    deleteSynonymMutation.mutate(
+      { synonym_id },
       {
         onSuccess: () => {
           toast({
-            title: "Etymology has been deleted successfully",
+            title: "Synonym has been deleted successfully",
             status: "success",
             duration: 3000,
             isClosable: true,
           })
+          onDeleteClose()
         },
         onError: (error) => {
           toast({
@@ -111,7 +104,7 @@ export default function WordEtymology({
     <Box>
       <Box position="relative">
         <Heading size="lg" p="2" textAlign="center">
-          Etymology
+          Synonyms
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
           <IconButton
@@ -121,14 +114,13 @@ export default function WordEtymology({
             fontSize="xl"
             variant="outline"
             colorScheme="blue"
+            title="Add synonym"
             onClick={onOpen}
           />
           <IconButton
             aria-label="Delete"
             title={
-              data?.length ?? 0 > 0
-                ? "Delete all etymologies"
-                : "No etymologies"
+              data?.length ?? 0 > 0 ? "Delete all synonyms" : "No synonyms"
             }
             isDisabled={!(data?.length || 0)}
             icon={<MdDelete />}
@@ -141,14 +133,15 @@ export default function WordEtymology({
         </Flex>
         <OrderedList>
           {data && data.length > 0 ? (
-            data.map((etymology) => (
-              <ListItem key={etymology.id}>
+            data.map((synonym) => (
+              <ListItem key={synonym.id} display="inline-block">
                 <EditableTextInput
-                  defaultValue={etymology.etymology}
+                  key={synonym.id}
+                  defaultValue={synonym.synonym}
                   setText={(value) => {
                     value === ""
-                      ? handleDelete(etymology.id)
-                      : handleUpdate(etymology.id, value)
+                      ? handleDelete(synonym.id)
+                      : handleUpdate(synonym.id, value)
                   }}
                   type="textarea"
                 />
@@ -156,18 +149,18 @@ export default function WordEtymology({
             ))
           ) : (
             <Text textAlign="center" p="2" fontSize="2xl">
-              No etymologies found
+              No synonyms found
             </Text>
           )}
         </OrderedList>
       </Box>
-      <AddEtymologyModal
+      <AddSynonymModal
         isOpen={isOpen}
         onClose={onClose}
         word={word}
         meaning_id={meaning_id}
       />
-      <DeleteEtymologyModal
+      <DeleteSynonymsModal
         word={word}
         meaning_id={meaning_id}
         isOpen={isDeleteOpen}

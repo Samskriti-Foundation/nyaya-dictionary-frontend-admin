@@ -33,11 +33,11 @@ export default function Navbar() {
         >
         <Heading 
           fontSize={{base: "xl", md: "2xl"}}
-          bgGradient='linear(to-l, primary, secondary)'
+          bgGradient='linear(to-l, primary.400, secondary.400)'
           bgClip='text'
           ><Link 
             as = {NavLink}
-            to = "/dictionary"
+            to = "/words"
             _hover = {{textDecoration: "none"}}
             >Nyaya - Admin Panel
           </Link>
@@ -49,25 +49,25 @@ export default function Navbar() {
           >
           <Link
             as = {NavLink}
-            to = "/dictionary"
-            _hover = {{color: "secondary"}}
-            _activeLink = {{color: "primary"}}
+            to = "/words"
+            _hover = {{color: "primary.500"}}
+            _activeLink = {{color: "primary.400"}}
             >Dictionary
           </Link>
           {user &&
             <Link
             as = {NavLink}
             to = "/management"
-            _hover = {{color: "secondary"}}
-            _activeLink = {{color: "primary"}}
+            _hover = {{color: "primary.500"}}
+            _activeLink = {{color: "primary.400"}}
             >Management
           </Link>
           }
           <Button
             onClick = {logout}
             color = "background"
-            bg = "primary"
-            _hover = {{bg: "secondary"}}
+            bg = "primary.400"
+            _hover = {{bg: "primary.500"}}
           >Logout</Button> 
         </HStack>
       </Flex>

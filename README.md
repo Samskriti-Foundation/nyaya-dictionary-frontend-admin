@@ -17,8 +17,14 @@ Nyaya - Admin Panel is the admin panel of [Nyaya Khosha](https://github.com/Sams
    ```bash
    git clone https://github.com/Samskriti-Foundation/nyaya-dictionary-frontend-admin.git
    ```
+   
+2. **Navigate to the project directory:**
+  
+    ```bash
+    cd nyaya-dictionary-frontend-admin
+    ```
 
-2. **Install Dependencies:**
+3. **Install Dependencies:**
    
     a. Install yarn if not already installed
 

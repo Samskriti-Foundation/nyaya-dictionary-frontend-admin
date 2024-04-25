@@ -3,14 +3,10 @@ import {
   Flex,
   Text,
   Heading,
-  IconButton,
   useDisclosure,
-  useToast,
   OrderedList,
   ListItem,
 } from "@chakra-ui/react"
-import { IoIosCreate } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
 import EditableTextInput from "../EditableTextInput"
 import {
   useDeleteWordDerivationMutation,
@@ -21,6 +17,9 @@ import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import DeleteDerivationModal from "./DeleteDerivationModal"
 import AddDerivationModal from "./AddDerivationModal"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordDerivation({
   word,
@@ -37,7 +36,8 @@ export default function WordDerivation({
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const { data, isLoading, error } = useGetWordDerivationsQuery(
     word,
@@ -54,21 +54,11 @@ export default function WordDerivation({
       { derivation_id, derivation },
       {
         onSuccess: () => {
-          toast({
-            title: "Derivation has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Derivation has been edited successfully")
           onClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -84,20 +74,10 @@ export default function WordDerivation({
       { derivation_id },
       {
         onSuccess: () => {
-          toast({
-            title: "Derivation has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Derivation has been deleted successfully")
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -117,38 +97,23 @@ export default function WordDerivation({
           Derivation
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
-            title="Add derivation"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+          <AccessControlledIconButton
+            type="ADD"
             onClick={onOpen}
+            title="Add derivation"
           />
-          <IconButton
-            aria-label="Delete"
-            title={
-              data?.length ?? 0 > 0
-                ? "Delete all derivations"
-                : "No derivations"
-            }
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
             onClick={onDeleteOpen}
+            title="Delete derivation"
+            isEmpty={!(data?.length || 0)}
           />
         </Flex>
         <OrderedList>
           {data && data.length > 0 ? (
             data.map((derivation) => (
-              <ListItem>
+              <ListItem key={derivation.id}>
                 <EditableTextInput
-                  key={derivation.id}
                   defaultValue={derivation.derivation}
                   setText={(value) => {
                     value === ""

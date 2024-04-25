@@ -1,7 +1,9 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useDeleteWordMeaningMutation } from "../../../api/meaning.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteMeaningModalProps {
   word: string
@@ -17,7 +19,10 @@ export default function DeleteMeaningModal({
   onClose,
 }: DeleteMeaningModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
+
   const wordMutation = useDeleteWordMeaningMutation(word)
 
   const handleSubmit = () => {
@@ -30,22 +35,12 @@ export default function DeleteMeaningModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Meaning has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Meaning has been deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

@@ -40,11 +40,16 @@ import {
 
 import { useGetDBManagersQuery } from "../../api/dbmanagers.api"
 import { useState } from "react"
-import AdminEditModal from "./AddDBManagerModal"
-import { Admin } from "../../types"
 import LoadingSpinner from "../LoadingSpinner"
 import ErrorMessage from "../ErrorMessage"
 
+type TDBManager = {
+  first_name: string
+  last_name: string
+  email: string
+  role: string
+  access: string
+}
 export default function DBManagersTable() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
@@ -55,7 +60,7 @@ export default function DBManagersTable() {
     error && <ErrorMessage error={error.message} />
   }
 
-  const [columns] = useState<ColumnDef<Admin>[]>([
+  const [columns] = useState<ColumnDef<TDBManager>[]>([
     {
       header: "First Name",
       accessorKey: "first_name",
@@ -68,14 +73,16 @@ export default function DBManagersTable() {
       header: "Email",
       accessorKey: "email",
     },
-    // {
-    //   header: "Created At",
-    //   accessorKey: "created_at",
-    // },
-    // {
-    //   header: "Last Login",
-    //   accessorKey: "last_login",
-    // },
+    {
+      header: "Role",
+      accessorKey: "role",
+      cell: (info) => info.getValue(),
+    },
+    {
+      header: "Access",
+      accessorKey: "access",
+      cell: (info) => info.getValue(),
+    },
   ])
 
   const [columnVisibility, setColumnVisibility] = useState({})
@@ -84,7 +91,7 @@ export default function DBManagersTable() {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     state: {
       columnVisibility,
@@ -101,10 +108,12 @@ export default function DBManagersTable() {
     onSortingChange: setSorting,
   })
 
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null)
+  const [selectedDBManager, setSelectedDBManager] = useState<TDBManager | null>(
+    null
+  )
 
-  const handleEditClick = (admin: Admin) => {
-    setSelectedAdmin(admin)
+  const handleEditClick = (dbManager: TDBManager) => {
+    setSelectedDBManager(dbManager)
     onOpen()
   }
 
@@ -192,11 +201,13 @@ export default function DBManagersTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <Th key={header.id} colSpan={header.colSpan}>
+                  <Th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    style={{ textAlign: "center" }}
+                  >
                     {header.isPlaceholder ? null : (
                       <Flex
-                        gap="2"
-                        align="center"
                         className={
                           header.column.getCanSort()
                             ? "cursor-pointer select-none"
@@ -254,13 +265,6 @@ export default function DBManagersTable() {
           </Tbody>
         </Table>
       </TableContainer>
-      {selectedAdmin && (
-        <AdminEditModal
-          isOpen={isOpen}
-          onClose={onClose}
-          dataItem={selectedAdmin}
-        />
-      )}
     </Box>
   )
 }

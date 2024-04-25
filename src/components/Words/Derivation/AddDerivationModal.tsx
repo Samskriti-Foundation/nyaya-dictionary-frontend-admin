@@ -1,7 +1,9 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
 import { useCreateWordDerivationMutation } from "../../../api/derivation.api"
-import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { FormControl, FormLabel, Textarea } from "@chakra-ui/react"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddDerivationModalProps {
   isOpen: boolean
@@ -19,19 +21,15 @@ export default function AddDerivationModal({
   const [derivation, setDerivation] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const derivationMutation = useCreateWordDerivationMutation(word, meaning_id)
   const handleSubmit = () => {
     setIsLoading(true)
 
     if (!derivation) {
-      toast({
-        title: "Derivation cannot be empty",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Derivation cannot be empty"))
       setIsLoading(false)
       return
     }
@@ -42,21 +40,11 @@ export default function AddDerivationModal({
         onSuccess: () => {
           setDerivation("")
           setIsLoading(false)
-          toast({
-            title: "Derivation has been added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Derivation added successfully!")
           onClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
           setIsLoading(false)
         },
       }

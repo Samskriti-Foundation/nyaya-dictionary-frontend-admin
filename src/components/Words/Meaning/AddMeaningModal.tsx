@@ -1,7 +1,9 @@
-import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { FormControl, FormLabel, Textarea } from "@chakra-ui/react"
 import { useState } from "react"
 import { useCreateWordMeaningMutation } from "../../../api/meaning.api"
 import BaseModal from "../WordModals/BaseModal"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddMeaningModalProps {
   word: string
@@ -17,7 +19,8 @@ export default function AddMeaningModal({
   const [meaning, setMeaning] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const wordMutation = useCreateWordMeaningMutation(word)
 
@@ -25,12 +28,7 @@ export default function AddMeaningModal({
     setIsLoading(true)
 
     if (!meaning) {
-      toast({
-        title: "Meaning cannot be empty",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Meaning cannot be empty"))
       setIsLoading(false)
       return
     }
@@ -43,22 +41,12 @@ export default function AddMeaningModal({
       {
         onSuccess: () => {
           setMeaning("")
-          toast({
-            title: "Meaning has been added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Meaning has been added successfully")
           onClose()
           setIsLoading(false)
         },
         onError: () => {
-          toast({
-            title: "Error adding meaning",
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(Error("Error adding meaning"))
           setIsLoading(false)
         },
       }

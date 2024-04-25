@@ -1,8 +1,10 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
 
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useDeleteWordExampleMutation } from "../../../api/example.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteSingleExampleModalProps {
   isOpen: boolean
@@ -20,7 +22,9 @@ export default function DeleteSingleExampleModal({
   example_id,
 }: DeleteSingleExampleModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const exampleMutation = useDeleteWordExampleMutation(word, meaning_id)
 
@@ -34,23 +38,12 @@ export default function DeleteSingleExampleModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Example deleted",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          })
+          successToast("Example deleted")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          })
-
+          errorToast(error)
           onClose()
         },
       }

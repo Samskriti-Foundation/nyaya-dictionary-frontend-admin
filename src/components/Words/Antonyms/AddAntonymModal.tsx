@@ -1,7 +1,9 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
-import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { FormControl, FormLabel, Textarea } from "@chakra-ui/react"
 import { useCreateWordAntonymMutation } from "../../../api/antonyms.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddAntonymModalProps {
   isOpen: boolean
@@ -19,7 +21,8 @@ export default function AddAntonymModal({
   const [antonym, setAntonym] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const antonymMutation = useCreateWordAntonymMutation(word, meaning_id)
 
@@ -27,12 +30,7 @@ export default function AddAntonymModal({
     setIsLoading(true)
 
     if (!antonym) {
-      toast({
-        title: "Please enter an antonym",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Please enter antonym"))
       return
     }
 
@@ -44,20 +42,11 @@ export default function AddAntonymModal({
         onSuccess: () => {
           setIsLoading(false)
           setAntonym("")
-          toast({
-            title: "Antonym added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          onClose()
+          successToast("Antonym added successfully!")
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

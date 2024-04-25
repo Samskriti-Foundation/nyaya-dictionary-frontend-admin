@@ -1,12 +1,4 @@
-import {
-  Box,
-  Divider,
-  Flex,
-  Heading,
-  IconButton,
-  useDisclosure,
-  useToast,
-} from "@chakra-ui/react"
+import { Box, Divider, Flex, Heading, useDisclosure } from "@chakra-ui/react"
 
 import {
   useGetWordMeaningQuery,
@@ -14,7 +6,6 @@ import {
 } from "../../../api/meaning.api"
 import EditableTextInput from "../EditableTextInput"
 
-import { MdDelete } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import DeleteMeaningModal from "./DeleteMeaningModal"
@@ -25,6 +16,9 @@ import WordExample from "../Example/WordExample"
 import WordNyayaTextReference from "../NyayaTextReference/WordNyayaTextReference"
 import WordSynonmys from "../Synonyms/WordSynonmys"
 import WordAntonyms from "../Antonyms/WordAntonyms"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordMeaning({
   word,
@@ -36,7 +30,8 @@ export default function WordMeaning({
   const { isLoading, error, data } = useGetWordMeaningQuery(word, meaning_id)
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const editMeaningMutation = useUpdateWordMeaningMutation(word, meaning_id)
 
@@ -45,21 +40,11 @@ export default function WordMeaning({
       { meaning: value },
       {
         onSuccess: () => {
-          toast({
-            title: "Meaning has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Meaning has been edited successfully")
           onClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -67,9 +52,6 @@ export default function WordMeaning({
 
   {
     isLoading && <LoadingSpinner />
-  }
-
-  {
     error && <ErrorMessage error={error.message} />
   }
 
@@ -80,15 +62,10 @@ export default function WordMeaning({
           Meaning
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Delete"
+          <AccessControlledIconButton
+            type="DELETE"
             title="Delete meaning"
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
-            isDisabled={data ? false : true}
+            isEmpty={data ? false : true}
             onClick={onOpen}
           />
         </Flex>

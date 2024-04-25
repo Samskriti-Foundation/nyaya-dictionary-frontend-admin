@@ -1,7 +1,9 @@
-import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { FormControl, FormLabel, Textarea } from "@chakra-ui/react"
 import BaseModal from "../WordModals/BaseModal"
 import { useState } from "react"
 import { useCreateWordEtymologyMutation } from "../../../api/etymology.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddEtymologyModalProps {
   isOpen: boolean
@@ -19,19 +21,15 @@ export default function AddEtymologyModal({
   const [etymology, setEtymology] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const etymologyMutation = useCreateWordEtymologyMutation(word, meaning_id)
   const handleSubmit = () => {
     setIsLoading(true)
 
     if (!etymology) {
-      toast({
-        title: "Etymology cannot be empty",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Etymology cannot be empty"))
       setIsLoading(false)
       return
     }
@@ -41,22 +39,12 @@ export default function AddEtymologyModal({
       {
         onSuccess: () => {
           setEtymology("")
-          toast({
-            title: "Etymologies has been added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Etymology added successfully!")
           onClose()
           setIsLoading(false)
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
           setIsLoading(false)
         },
       }

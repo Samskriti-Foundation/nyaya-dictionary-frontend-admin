@@ -1,7 +1,9 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useDeleteWordDerivationsMutation } from "../../../api/derivation.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteDerivationModalProps {
   word: string
@@ -18,7 +20,8 @@ export default function DeleteDerivationModal({
 }: DeleteDerivationModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const derivationMutation = useDeleteWordDerivationsMutation(word, meaning_id)
 
@@ -31,22 +34,12 @@ export default function DeleteDerivationModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Derivations has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Derivations has been deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

@@ -1,13 +1,9 @@
-import {
-  FormControl,
-  FormLabel,
-  Spacer,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react"
+import { FormControl, FormLabel, Spacer, Textarea } from "@chakra-ui/react"
 import BaseModal from "../WordModals/BaseModal"
 import { useState } from "react"
 import { useCreateWordExampleMutation } from "../../../api/example.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddExampleModalProps {
   isOpen: boolean
@@ -26,7 +22,8 @@ export default function AddExampleModal({
   const [applicableModernContext, setApplicableModernContext] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const exampleMutation = useCreateWordExampleMutation(word, meaning_id)
 
@@ -42,15 +39,11 @@ export default function AddExampleModal({
           setIsLoading(false)
           setExample("")
           setApplicableModernContext("")
-          toast({
-            title: "Example has been added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Example has been added successfully")
           onClose()
         },
-        onError: () => {
+        onError: (error) => {
+          errorToast(error)
           setIsLoading(false)
         },
       }

@@ -18,7 +18,7 @@ type TDBManager = {
 }
 
 export const getDBManagers = async () => {
-  const response = await api.get(`/d`)
+  const response = await api.get("/db-managers")
   return response.data
 }
 

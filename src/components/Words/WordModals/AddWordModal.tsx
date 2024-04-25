@@ -1,9 +1,10 @@
-import { Flex, FormControl, FormLabel, Input, useToast } from "@chakra-ui/react"
-
+import { Flex, FormControl, FormLabel, Input } from "@chakra-ui/react"
 import { useState } from "react"
 import BaseModal from "./BaseModal"
 import { useCreateWordMutation } from "../../../api/words.api"
 import { useNavigate } from "react-router-dom"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddWordModalProps {
   isOpen: boolean
@@ -16,7 +17,8 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
 
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
   const navigate = useNavigate()
 
   const wordMutation = useCreateWordMutation()
@@ -33,24 +35,14 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
         onSuccess: () => {
           setIsLoading(false)
           navigate(`/words/${sanskrit_word}`)
-          toast({
-            title: "Word added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Word added successfully!")
           setSanskritWord("")
           setEnglishTransliteration("")
           onClose()
         },
 
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
           setIsLoading(false)
           onClose()
         },

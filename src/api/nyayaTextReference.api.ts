@@ -22,7 +22,7 @@ export const getWordNyayaTextReferences = async (
   meaning_id: number
 ) => {
   const response = await api.get(
-    `words/${word}/${meaning_id}/nyaya_text_references`
+    `words/${word}/${meaning_id}/nyaya-text-references`
   )
   return response.data
 }
@@ -44,7 +44,7 @@ export const createWordNyayaTextReference = async (
   description: string
 ) => {
   const response = await api.post(
-    `words/${word}/${meaning_id}/nyaya_text_references`,
+    `words/${word}/${meaning_id}/nyaya-text-references`,
     {
       source,
       description,
@@ -83,7 +83,7 @@ export const updateWordNyayaTextReference = async (
   description: string
 ) => {
   const response = await api.put(
-    `words/${word}/${meaning_id}/nyaya_text_references/${nyaya_text_id}`,
+    `words/${word}/${meaning_id}/nyaya-text-references/${nyaya_text_id}`,
     {
       source,
       description,
@@ -128,7 +128,7 @@ export const deleteWordNyayaTextReference = async (
   nyaya_text_id: number
 ) => {
   const response = await api.delete(
-    `words/${word}/${meaning_id}/nyaya_text_references/${nyaya_text_id}`
+    `words/${word}/${meaning_id}/nyaya-text-references/${nyaya_text_id}`
   )
   return response.data
 }
@@ -154,7 +154,7 @@ export const deleteWordNyayaTextReferences = async (
   meaning_id: number
 ) => {
   const response = await api.delete(
-    `words/${word}/${meaning_id}/nyaya_text_references`
+    `words/${word}/${meaning_id}/nyaya-text-references`
   )
   return response.data
 }

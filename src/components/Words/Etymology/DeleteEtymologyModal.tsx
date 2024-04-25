@@ -1,7 +1,9 @@
 import { useState } from "react"
 import BaseModal from "../WordModals/BaseModal"
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useDeleteWordEtymologiesMutation } from "../../../api/etymology.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteEtymologyModalProps {
   word: string
@@ -18,7 +20,8 @@ export default function DeleteEtymologyModal({
 }: DeleteEtymologyModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const etymologyMutation = useDeleteWordEtymologiesMutation(word, meaning_id)
 
@@ -31,22 +34,12 @@ export default function DeleteEtymologyModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Etymologies has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Etymologies has been deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

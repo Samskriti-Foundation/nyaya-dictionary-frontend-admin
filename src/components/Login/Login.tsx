@@ -14,8 +14,9 @@ import {
 import { FaBook } from "react-icons/fa"
 import { PasswordField } from "./PasswordField"
 import { BaseSyntheticEvent } from "react"
-import { useState } from "react"
-import { useToast } from "@chakra-ui/react"
+import { useContext, useState } from "react"
+import useErrorToast from "../../hooks/useErrorToast"
+import AuthContext, { AuthContextValue } from "../../context/AuthContext"
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -23,28 +24,26 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const toast = useToast()
+  const errorToast = useErrorToast()
+
+  const { login } = useContext<AuthContextValue>(AuthContext)
 
   const handleSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     if (!email || !password) {
-      toast({
-        position: "top",
-        title: "Please enter email and password",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Please fill in all fields"), "top")
       setIsLoading(false)
       return
     }
+
+    login({ email, password, setIsLoading })
   }
 
   return (
     <Card maxW="md" p={8} bg="foreground" boxShadow="lg">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <Stack spacing={4}>
           <Center color="primary.400">
             <Icon as={FaBook} h="32px" w="32px" />

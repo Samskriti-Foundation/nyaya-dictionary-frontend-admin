@@ -2,19 +2,17 @@ import {
   Box,
   Flex,
   Heading,
-  IconButton,
   Spacer,
   Text,
   useDisclosure,
 } from "@chakra-ui/react"
-import { MdDelete } from "react-icons/md"
 import AddTranslationModal from "./AddTranslationModal"
-import { IoIosCreate } from "react-icons/io"
 import DeleteTranslationsModal from "./DeleteTranslationsModal"
 import { useGetWordTranslationsQuery } from "../../../api/translation.api"
 import ErrorMessage from "../../ErrorMessage"
 import LoadingSpinner from "../../LoadingSpinner"
 import TranslationTable from "./TranslationTable"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordTranslation({
   word,
@@ -47,25 +45,15 @@ export default function WordTranslation({
           Translation
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
+          <AccessControlledIconButton
             title="Add translation"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+            type="ADD"
             onClick={onOpen}
           />
-          <IconButton
-            aria-label="Delete"
-            title={data?.length ? "Delete all translations" : "No translations"}
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
+            title="Delete all translations"
+            isEmpty={data?.length ? false : true}
             onClick={onDeleteOpen}
           />
         </Flex>

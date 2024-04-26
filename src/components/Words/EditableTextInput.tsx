@@ -12,9 +12,11 @@ import {
   Tooltip,
 } from "@chakra-ui/react"
 
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { FaCheck } from "react-icons/fa"
 import { MdClose } from "react-icons/md"
+import AuthContext from "../../context/AuthContext"
+import { accessToInt, typeToInt } from "../../utils/converter"
 
 interface EditableTextInputProps {
   defaultValue: string
@@ -29,6 +31,12 @@ export default function EditableTextInput({
   setText,
   inlineBlock = false,
 }: EditableTextInputProps) {
+  let { access } = useContext(AuthContext)
+
+  access = access ?? "READ_ONLY"
+
+  const isAccessAllowed = accessToInt(access) >= typeToInt("EDIT")
+
   const [inputValue, setInputValue] = useState(defaultValue)
 
   function EditableControls() {
@@ -70,11 +78,18 @@ export default function EditableTextInput({
       defaultValue={defaultValue}
       isPreviewFocusable={true}
       selectAllOnFocus={false}
+      isDisabled={!isAccessAllowed}
     >
-      <Tooltip label="Click to edit" shouldWrapChildren={true}>
+      <Tooltip
+        label={
+          isAccessAllowed ? "Click to edit" : "Insufficient access to edit"
+        }
+        shouldWrapChildren={true}
+      >
         <EditablePreview
           py={2}
           px={4}
+          cursor={isAccessAllowed ? "pointer" : "not-allowed"}
           _hover={{
             background: useColorModeValue("gray.100", "gray.700"),
           }}

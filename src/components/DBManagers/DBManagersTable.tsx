@@ -38,21 +38,29 @@ import {
   InputRightElement,
 } from "@chakra-ui/react"
 
-import { getAdmins } from "../../api/admin.api"
+import { useGetDBManagersQuery } from "../../api/dbmanagers.api"
 import { useState } from "react"
-import { useQuery } from "@tanstack/react-query"
-import AdminEditModal from "./AdminEditModal"
-import { Admin } from "../../types"
+import LoadingSpinner from "../LoadingSpinner"
+import ErrorMessage from "../ErrorMessage"
 
-export default function AdminTable() {
-  const { data } = useQuery({
-    queryKey: ["admins"],
-    queryFn: getAdmins,
-  })
-
+type TDBManager = {
+  first_name: string
+  last_name: string
+  email: string
+  role: string
+  access: string
+}
+export default function DBManagersTable() {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const [columns] = useState<ColumnDef<Admin>[]>([
+  const { data, isLoading, error } = useGetDBManagersQuery()
+
+  {
+    isLoading && <LoadingSpinner />
+    error && <ErrorMessage error={error.message} />
+  }
+
+  const [columns] = useState<ColumnDef<TDBManager>[]>([
     {
       header: "First Name",
       accessorKey: "first_name",
@@ -65,14 +73,16 @@ export default function AdminTable() {
       header: "Email",
       accessorKey: "email",
     },
-    // {
-    //   header: "Created At",
-    //   accessorKey: "created_at",
-    // },
-    // {
-    //   header: "Last Login",
-    //   accessorKey: "last_login",
-    // },
+    {
+      header: "Role",
+      accessorKey: "role",
+      cell: (info) => info.getValue(),
+    },
+    {
+      header: "Access",
+      accessorKey: "access",
+      cell: (info) => info.getValue(),
+    },
   ])
 
   const [columnVisibility, setColumnVisibility] = useState({})
@@ -81,7 +91,7 @@ export default function AdminTable() {
   const [sorting, setSorting] = useState<SortingState>([])
 
   const table = useReactTable({
-    data,
+    data: data || [],
     columns,
     state: {
       columnVisibility,
@@ -98,10 +108,12 @@ export default function AdminTable() {
     onSortingChange: setSorting,
   })
 
-  const [selectedAdmin, setSelectedAdmin] = useState<Admin | null>(null)
+  const [selectedDBManager, setSelectedDBManager] = useState<TDBManager | null>(
+    null
+  )
 
-  const handleEditClick = (admin: Admin) => {
-    setSelectedAdmin(admin)
+  const handleEditClick = (dbManager: TDBManager) => {
+    setSelectedDBManager(dbManager)
     onOpen()
   }
 
@@ -189,11 +201,13 @@ export default function AdminTable() {
             {table.getHeaderGroups().map((headerGroup) => (
               <Tr key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <Th key={header.id} colSpan={header.colSpan}>
+                  <Th
+                    key={header.id}
+                    colSpan={header.colSpan}
+                    style={{ textAlign: "center" }}
+                  >
                     {header.isPlaceholder ? null : (
                       <Flex
-                        gap="2"
-                        align="center"
                         className={
                           header.column.getCanSort()
                             ? "cursor-pointer select-none"
@@ -251,13 +265,6 @@ export default function AdminTable() {
           </Tbody>
         </Table>
       </TableContainer>
-      {selectedAdmin && (
-        <AdminEditModal
-          isOpen={isOpen}
-          onClose={onClose}
-          dataItem={selectedAdmin}
-        />
-      )}
     </Box>
   )
 }

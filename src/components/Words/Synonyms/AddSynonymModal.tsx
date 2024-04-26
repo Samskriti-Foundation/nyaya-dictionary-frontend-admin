@@ -1,7 +1,9 @@
-import { FormControl, FormLabel, Textarea, useToast } from "@chakra-ui/react"
+import { FormControl, FormLabel, Textarea } from "@chakra-ui/react"
 import BaseModal from "../WordModals/BaseModal"
 import { useState } from "react"
 import { useCreateWordSynonymMutation } from "../../../api/synonyms.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddSynonymModalProps {
   isOpen: boolean
@@ -19,7 +21,8 @@ export default function AddSynonymModal({
   const [synonym, setEtymology] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const synonymMutation = useCreateWordSynonymMutation(word, meaning_id)
 
@@ -27,12 +30,7 @@ export default function AddSynonymModal({
     setIsLoading(true)
 
     if (!synonym) {
-      toast({
-        title: "Please enter a synonym",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      successToast("Please enter a synonym")
       return
     }
 
@@ -44,20 +42,10 @@ export default function AddSynonymModal({
         onSuccess: () => {
           setIsLoading(false)
           setEtymology("")
-          toast({
-            title: "Synonym added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Synonym added successfully")
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

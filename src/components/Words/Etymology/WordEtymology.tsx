@@ -3,13 +3,10 @@ import {
   Flex,
   Text,
   Heading,
-  IconButton,
   useDisclosure,
-  useToast,
   ListItem,
   OrderedList,
 } from "@chakra-ui/react"
-import { MdDelete } from "react-icons/md"
 import {
   useDeleteWordEtymologyMutation,
   useGetWordEtymologiesQuery,
@@ -20,7 +17,9 @@ import ErrorMessage from "../../ErrorMessage"
 import DeleteEtymologyModal from "./DeleteEtymologyModal"
 import EditableTextInput from "../EditableTextInput"
 import AddEtymologyModal from "./AddEtymologyModal"
-import { IoIosCreate } from "react-icons/io"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 export default function WordEtymology({
   word,
@@ -37,7 +36,8 @@ export default function WordEtymology({
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const { isLoading, error, data } = useGetWordEtymologiesQuery(
     word,
@@ -54,20 +54,10 @@ export default function WordEtymology({
       { etymology_id, etymology },
       {
         onSuccess: () => {
-          toast({
-            title: "Etymology has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Etymology has been edited successfully")
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -83,20 +73,10 @@ export default function WordEtymology({
       { etymology_id },
       {
         onSuccess: () => {
-          toast({
-            title: "Etymology has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Etymology has been deleted successfully")
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -114,29 +94,16 @@ export default function WordEtymology({
           Etymology
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+          <AccessControlledIconButton
             onClick={onOpen}
+            type="ADD"
+            title="Add an etymology"
           />
-          <IconButton
-            aria-label="Delete"
-            title={
-              data?.length ?? 0 > 0
-                ? "Delete all etymologies"
-                : "No etymologies"
-            }
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
             onClick={onDeleteOpen}
+            type="DELETE"
+            title="Delete all etymologies"
+            isEmpty={!(data?.length || 0)}
           />
         </Flex>
         <OrderedList>

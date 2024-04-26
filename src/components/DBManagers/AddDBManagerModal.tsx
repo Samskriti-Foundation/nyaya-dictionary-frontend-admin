@@ -1,7 +1,7 @@
 import { BaseSyntheticEvent, useEffect, useState } from "react"
 
 import { useQueryClient, useMutation } from "@tanstack/react-query"
-import { updateAdmin } from "../../api/admin.api"
+import { updateAdmin } from "../../api/dbmanagers.api"
 
 import {
   Flex,

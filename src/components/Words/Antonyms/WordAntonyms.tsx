@@ -3,24 +3,23 @@ import {
   Flex,
   Text,
   Heading,
-  IconButton,
   ListItem,
   OrderedList,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react"
-import { IoIosCreate } from "react-icons/io"
 import EditableTextInput from "../EditableTextInput"
 import {
   useDeleteWordAntonymMutation,
   useGetWordAntonymsQuery,
   useUpdateWordAntonymMutation,
 } from "../../../api/antonyms.api"
-import { MdDelete } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import AddAntonymModal from "./AddAntonymModal"
 import DeleteAntonymsModal from "./DeleteAntonymsModal"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordAntonyms({
   word,
@@ -37,7 +36,8 @@ export default function WordAntonyms({
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const { isLoading, error, data } = useGetWordAntonymsQuery(word, meaning_id)
 
@@ -48,21 +48,11 @@ export default function WordAntonyms({
       { antonym_id, antonym },
       {
         onSuccess: () => {
-          toast({
-            title: "Antonym has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Antonym has been edited successfully")
           onClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -75,21 +65,11 @@ export default function WordAntonyms({
       { antonym_id },
       {
         onSuccess: () => {
-          toast({
-            title: "Antonym has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Antonym has been deleted successfully")
           onDeleteClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -107,28 +87,16 @@ export default function WordAntonyms({
           Antonyms
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
-            title="Add antonym"
+          <AccessControlledIconButton
+            type="ADD"
             onClick={onOpen}
+            title="Add antonym"
           />
-          <IconButton
-            aria-label="Delete"
-            title={
-              data?.length ?? 0 > 0 ? "Delete all antonyms" : "No antonyms"
-            }
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
             onClick={onDeleteOpen}
+            title="Delete all antonyms"
+            isEmpty={!(data?.length || 0)}
           />
         </Flex>
         <OrderedList>

@@ -1,7 +1,9 @@
-import { Flex, FormControl, FormLabel, Input, useToast } from "@chakra-ui/react"
+import { Flex, FormControl, FormLabel, Input } from "@chakra-ui/react"
 import BaseModal from "./BaseModal"
 import { useState } from "react"
 import { useUpdateWordMutation } from "../../../api/words.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface EditWordModalProps {
   isOpen: boolean
@@ -22,7 +24,10 @@ export default function EditWordModal({
   )
 
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
+
   const wordMutation = useUpdateWordMutation(sanskrit_word)
 
   const handleSubmit = () => {
@@ -35,22 +40,12 @@ export default function EditWordModal({
       },
       {
         onSuccess: () => {
-          toast({
-            title: "Word has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Word has been edited successfully")
           onClose()
           setIsLoading(false)
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
           setIsLoading(false)
         },
       }

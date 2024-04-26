@@ -1,7 +1,9 @@
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import BaseModal from "../WordModals/BaseModal"
 import { useState } from "react"
 import { useDeleteWordTranslationsMutation } from "../../../api/translation.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteTranslationsModalProps {
   isOpen: boolean
@@ -17,7 +19,10 @@ export default function DeleteTranslationsModal({
   meaning_id,
 }: DeleteTranslationsModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
+
   const translationMutation = useDeleteWordTranslationsMutation(
     word,
     meaning_id
@@ -33,22 +38,12 @@ export default function DeleteTranslationsModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Translation deleted",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          })
+          successToast("Translations deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

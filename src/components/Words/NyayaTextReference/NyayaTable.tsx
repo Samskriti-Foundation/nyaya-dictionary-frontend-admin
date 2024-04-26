@@ -6,19 +6,18 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
   useDisclosure,
   Flex,
   Box,
 } from "@chakra-ui/react"
 
-import { MdDelete, MdEdit } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import { useState } from "react"
 import { useGetWordNyayaTextReferencesQuery } from "../../../api/nyayaTextReference.api"
 import EditNyayaTextReferenceModal from "./EditNyayaTextReferenceModal"
 import DeleteSingleNyayaTextReferenceModal from "./DeleteSingleNyayaTextReferenceModal"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 interface NyayaTableProps {
   word: string
@@ -70,28 +69,19 @@ export default function NyayaTable({ word, meaning_id }: NyayaTableProps) {
                 <Td style={{ textAlign: "center" }}>{nyaya.description}</Td>
                 <Td style={{ textAlign: "center" }}>
                   <Flex gap="2" justifyContent="center">
-                    <IconButton
-                      aria-label="Edit"
+                    <AccessControlledIconButton
+                      type="EDIT"
                       title="Edit nyaya text reference"
-                      icon={<MdEdit />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="black"
                       onClick={() => {
                         setSource(nyaya.source)
                         setDescription(nyaya.description)
                         onEditOpen()
                       }}
                     />
-                    <IconButton
-                      aria-label="Delete"
+                    <AccessControlledIconButton
+                      type="DELETE"
                       title="Delete nyaya text reference"
-                      icon={<MdDelete />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="red"
+                      isEmpty={nyaya ? false : true}
                       onClick={() => {
                         setNyayaId(nyaya.id)
                         onDeleteOpen()

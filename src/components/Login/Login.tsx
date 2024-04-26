@@ -13,13 +13,10 @@ import {
 
 import { FaBook } from "react-icons/fa"
 import { PasswordField } from "./PasswordField"
-import { useLoginDBManagerQuery } from "../../api/login.api"
-
 import { BaseSyntheticEvent } from "react"
-
-import { useState } from "react"
-import { useToast } from "@chakra-ui/react"
-import { useNavigate } from "react-router-dom"
+import { useContext, useState } from "react"
+import useErrorToast from "../../hooks/useErrorToast"
+import AuthContext, { AuthContextValue } from "../../context/AuthContext"
 
 export default function Login() {
   const [isLoading, setIsLoading] = useState(false)
@@ -27,59 +24,26 @@ export default function Login() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
-  const toast = useToast()
-  const navigate = useNavigate()
+  const errorToast = useErrorToast()
 
-  const loginMutation = useLoginDBManagerQuery()
+  const { login } = useContext<AuthContextValue>(AuthContext)
 
   const handleSubmit = async (e: BaseSyntheticEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     if (!email || !password) {
-      toast({
-        position: "top",
-        title: "Please enter email and password",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Please fill in all fields"), "top")
       setIsLoading(false)
       return
     }
 
-    loginMutation.mutate(
-      { username: email, password },
-      {
-        onSuccess: (data: { access_token: string; token_type: string }) => {
-          navigate("/words")
-          toast({
-            position: "top",
-            title: "Login successful",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
-          localStorage.setItem("token", data.access_token)
-          setIsLoading(false)
-        },
-        onError: (error) => {
-          toast({
-            position: "top",
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
-          setIsLoading(false)
-        },
-      }
-    )
+    login({ email, password, setIsLoading })
   }
 
   return (
     <Card maxW="md" p={8} bg="foreground" boxShadow="lg">
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={(e) => handleSubmit(e)}>
         <Stack spacing={4}>
           <Center color="primary.400">
             <Icon as={FaBook} h="32px" w="32px" />

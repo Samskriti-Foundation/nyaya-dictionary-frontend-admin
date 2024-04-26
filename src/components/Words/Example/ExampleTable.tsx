@@ -6,19 +6,18 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
   useDisclosure,
   Flex,
   Box,
 } from "@chakra-ui/react"
 
-import { MdDelete, MdEdit } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import { useGetWordExamplesQuery } from "../../../api/example.api"
 import DeleteSingleExampleModal from "./DeleteSingleExampleModal"
 import { useState } from "react"
 import EditExampleModal from "./EditExampleModal"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 interface ExampleTableProps {
   word: string
@@ -71,14 +70,8 @@ export default function ExampleTable({ word, meaning_id }: ExampleTableProps) {
                 </Td>
                 <Td style={{ textAlign: "center" }}>
                   <Flex gap="2" justifyContent="center">
-                    <IconButton
-                      aria-label="Edit"
-                      title="Edit example"
-                      icon={<MdEdit />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="black"
+                    <AccessControlledIconButton
+                      type="EDIT"
                       onClick={() => {
                         setExampleId(example.id)
                         setExample(example.example_sentence)
@@ -87,19 +80,16 @@ export default function ExampleTable({ word, meaning_id }: ExampleTableProps) {
                         )
                         onEditOpen()
                       }}
+                      title="Edit example"
                     />
-                    <IconButton
-                      aria-label="Delete"
-                      title="Delete example"
-                      icon={<MdDelete />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="red"
+                    <AccessControlledIconButton
+                      type="DELETE"
                       onClick={() => {
                         setExampleId(example.id)
                         onDeleteOpen()
                       }}
+                      title="Delete example"
+                      isEmpty={!(example.example_sentence || "")}
                     />
                   </Flex>
                 </Td>

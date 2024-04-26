@@ -1,13 +1,9 @@
-import {
-  FormControl,
-  FormLabel,
-  Spacer,
-  Textarea,
-  useToast,
-} from "@chakra-ui/react"
+import { FormControl, FormLabel, Spacer, Textarea } from "@chakra-ui/react"
 import BaseModal from "../WordModals/BaseModal"
 import { useEffect, useState } from "react"
 import { useUpdateWordNyayaTextReferenceMutation } from "../../../api/nyayaTextReference.api"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface EditNyayaTextReferenceModalProps {
   isOpen: boolean
@@ -37,7 +33,9 @@ export default function EditNyayaTextReferenceModal({
   }, [defaultSource, defaultDescription])
 
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const nyayaMutation = useUpdateWordNyayaTextReferenceMutation(
     word,
@@ -58,22 +56,12 @@ export default function EditNyayaTextReferenceModal({
           setIsLoading(false)
           setSource("")
           setDescription("")
-          toast({
-            title: "Nyaya text reference updated successfully",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          })
+          successToast("Nyaya text reference updated successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

@@ -2,15 +2,11 @@ import {
   Box,
   Flex,
   Heading,
-  IconButton,
   ListItem,
   OrderedList,
   Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react"
-import { IoIosCreate } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
 import EditableTextInput from "../EditableTextInput"
 import AddSynonymModal from "./AddSynonymModal"
 import {
@@ -21,6 +17,9 @@ import {
 import DeleteSynonymsModal from "./DeleteSynonymsModal"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordSynonmys({
   word,
@@ -37,7 +36,8 @@ export default function WordSynonmys({
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const { isLoading, error, data } = useGetWordSynonymsQuery(word, meaning_id)
 
@@ -48,21 +48,11 @@ export default function WordSynonmys({
       { synonym_id, synonym },
       {
         onSuccess: () => {
-          toast({
-            title: "Synonym has been edited successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Synonym has been edited successfully")
           onClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -75,21 +65,11 @@ export default function WordSynonmys({
       { synonym_id },
       {
         onSuccess: () => {
-          toast({
-            title: "Synonym has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Synonym has been deleted successfully")
           onDeleteClose()
         },
         onError: (error) => {
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )
@@ -107,27 +87,14 @@ export default function WordSynonmys({
           Synonyms
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+          <AccessControlledIconButton
+            type="ADD"
             title="Add synonym"
             onClick={onOpen}
           />
-          <IconButton
-            aria-label="Delete"
-            title={
-              data?.length ?? 0 > 0 ? "Delete all synonyms" : "No synonyms"
-            }
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
+            title="Delete all synonyms"
             onClick={onDeleteOpen}
           />
         </Flex>

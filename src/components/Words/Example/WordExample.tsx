@@ -2,19 +2,17 @@ import {
   Box,
   Flex,
   Heading,
-  IconButton,
   Spacer,
   Text,
   useDisclosure,
 } from "@chakra-ui/react"
-import { MdDelete } from "react-icons/md"
-import { IoIosCreate } from "react-icons/io"
 import ErrorMessage from "../../ErrorMessage"
 import LoadingSpinner from "../../LoadingSpinner"
 import DeleteExamplesModal from "./DeleteExamplesModal"
 import AddExampleModal from "./AddExampleModal"
 import ExampleTable from "./ExampleTable"
 import { useGetWordExamplesQuery } from "../../../api/example.api"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordExample({
   word,
@@ -44,26 +42,16 @@ export default function WordExample({
           Example
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
-            title="Add example"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+          <AccessControlledIconButton
+            type="ADD"
             onClick={onOpen}
+            title="Add an example"
           />
-          <IconButton
-            aria-label="Delete"
-            title={data?.length ? "Delete all examples" : "No examples"}
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
             onClick={onDeleteOpen}
+            title="Delete all examples"
+            isEmpty={!(data?.length || 0)}
           />
         </Flex>
         <Spacer h="2" />

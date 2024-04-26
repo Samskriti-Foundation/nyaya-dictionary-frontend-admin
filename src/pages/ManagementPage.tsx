@@ -2,7 +2,7 @@ import { Flex, List, ListItem, Link } from "@chakra-ui/react"
 import BaseLayout from "../layouts/BaseLayout"
 import Drawer from "../components/Drawer/Drawer"
 import { NavLink, Route, Routes } from "react-router-dom"
-import Admin from "../components/Admin/Admin"
+import Admin from "../components/DBManagers/DBManagers"
 import Report from "../components/Report/Report"
 
 const links = [

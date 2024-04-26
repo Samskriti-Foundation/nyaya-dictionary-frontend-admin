@@ -1,7 +1,9 @@
 import { useState } from "react"
 import { useDeleteWordNyayaTextReferencesMutation } from "../../../api/nyayaTextReference.api"
 import BaseModal from "../WordModals/BaseModal"
-import { Text, useToast } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteNyayaTextReferencesModalProps {
   isOpen: boolean
@@ -18,7 +20,8 @@ export default function DeleteNyayaTextReferencesModal({
 }: DeleteNyayaTextReferencesModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const nyayaMutation = useDeleteWordNyayaTextReferencesMutation(
     word,
@@ -35,22 +38,12 @@ export default function DeleteNyayaTextReferencesModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Nyaya text references deleted successfully",
-            status: "success",
-            duration: 5000,
-            isClosable: true,
-          })
+          successToast("Nyaya text references deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 5000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

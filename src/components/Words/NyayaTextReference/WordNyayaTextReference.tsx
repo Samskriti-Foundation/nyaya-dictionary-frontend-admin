@@ -1,20 +1,12 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  IconButton,
-  Spacer,
-  useDisclosure,
-} from "@chakra-ui/react"
+import { Box, Flex, Heading, Spacer, useDisclosure } from "@chakra-ui/react"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
-import { IoIosCreate } from "react-icons/io"
-import { MdDelete } from "react-icons/md"
 import { Text } from "@chakra-ui/react"
 import { useGetWordNyayaTextReferencesQuery } from "../../../api/nyayaTextReference.api"
 import AddNyayaTextReferenceModal from "./AddNyayaTextReferenceModal"
 import DeleteNyayaTextReferencesModal from "./DeleteNyayaTextReferencesModal"
 import NyayaTable from "./NyayaTable"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 export default function WordNyayaTextReference({
   word,
@@ -46,29 +38,15 @@ export default function WordNyayaTextReference({
           Nyaya Text References
         </Heading>
         <Flex gap="2" position="absolute" right="2" top="4">
-          <IconButton
-            aria-label="Add"
+          <AccessControlledIconButton
             title="Add nyaya text reference"
-            icon={<IoIosCreate />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="blue"
+            type="ADD"
             onClick={onOpen}
           />
-          <IconButton
-            aria-label="Delete"
-            title={
-              data?.length
-                ? "Delete all nyaya text references"
-                : "No nyaya text references"
-            }
-            isDisabled={!(data?.length || 0)}
-            icon={<MdDelete />}
-            size="sm"
-            fontSize="xl"
-            variant="outline"
-            colorScheme="red"
+          <AccessControlledIconButton
+            type="DELETE"
+            title="Delete all nyaya text references"
+            isEmpty={data?.length ? false : true}
             onClick={onDeleteOpen}
           />
         </Flex>

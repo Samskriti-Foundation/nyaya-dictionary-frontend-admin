@@ -10,20 +10,18 @@ import {
   TabPanel,
   Heading,
   useDisclosure,
-  IconButton,
   Text,
   Flex,
 } from "@chakra-ui/react"
 
 import WordMeaning from "../components/Words/Meaning/WordMeaning"
-import { MdDelete, MdEdit } from "react-icons/md"
-import { IoIosCreate } from "react-icons/io"
 import DeleteWordModal from "../components/Words/WordModals/DeleteWordModal"
 import { useGetWordQuery } from "../api/words.api"
 import LoadingSpinner from "../components/LoadingSpinner"
 import ErrorMessage from "../components/ErrorMessage"
 import EditWordModal from "../components/Words/WordModals/EditWordModal"
 import AddMeaningModal from "../components/Words/Meaning/AddMeaningModal"
+import AccessControlledIconButton from "../components/Button/AccessControlledIconButton"
 
 export default function SingleWordPage() {
   let { word } = useParams()
@@ -79,34 +77,19 @@ export default function SingleWordPage() {
                 {data.sanskrit_word} | {data.english_transliteration}
               </Heading>
               <Flex position="absolute" right="2" top="2" gap="2">
-                <IconButton
-                  aria-label="Add Meaning"
+                <AccessControlledIconButton
                   title="Add Meaning"
-                  icon={<IoIosCreate />}
-                  size="sm"
-                  fontSize="xl"
-                  variant="outline"
-                  colorScheme="blue"
+                  type="ADD"
                   onClick={onAddOpen}
                 />
-                <IconButton
-                  aria-label="Edit"
+                <AccessControlledIconButton
+                  type="EDIT"
                   title="Edit Word"
-                  icon={<MdEdit />}
-                  size="sm"
-                  fontSize="xl"
-                  variant="outline"
-                  colorScheme="alphas"
                   onClick={onEditOpen}
                 />
-                <IconButton
-                  aria-label="Delete"
-                  title="Delete word"
-                  icon={<MdDelete />}
-                  size="sm"
-                  fontSize="xl"
-                  variant="outline"
-                  colorScheme="red"
+                <AccessControlledIconButton
+                  type="DELETE"
+                  title="Delete Word"
                   onClick={onDeleteOpen}
                 />
               </Flex>

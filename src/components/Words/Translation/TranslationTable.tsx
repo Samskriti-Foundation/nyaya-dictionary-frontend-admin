@@ -6,19 +6,18 @@ import {
   Tr,
   Th,
   Td,
-  IconButton,
   useDisclosure,
   Flex,
   Box,
 } from "@chakra-ui/react"
 
-import { MdDelete, MdEdit } from "react-icons/md"
 import LoadingSpinner from "../../LoadingSpinner"
 import ErrorMessage from "../../ErrorMessage"
 import { useGetWordTranslationsQuery } from "../../../api/translation.api"
 import DeleteSingleTranslationModal from "./DeleteSingleTranslationModal"
 import { useState } from "react"
 import EditTranslationModal from "./EditTranslationModal"
+import AccessControlledIconButton from "../../Button/AccessControlledIconButton"
 
 interface TranslationTableProps {
   word: string
@@ -75,14 +74,9 @@ export default function TranslationTable({
                 </Td>
                 <Td style={{ textAlign: "center" }}>
                   <Flex gap="2" justifyContent="center">
-                    <IconButton
-                      aria-label="Edit"
+                    <AccessControlledIconButton
                       title="Edit translation"
-                      icon={<MdEdit />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="black"
+                      type="EDIT"
                       onClick={() => {
                         setTranslationId(translation.id)
                         setTranslation(translation.translation)
@@ -90,14 +84,10 @@ export default function TranslationTable({
                         onEditOpen()
                       }}
                     />
-                    <IconButton
-                      aria-label="Delete"
+                    <AccessControlledIconButton
                       title="Delete translation"
-                      icon={<MdDelete />}
-                      size="sm"
-                      fontSize="xl"
-                      variant="outline"
-                      colorScheme="red"
+                      type="DELETE"
+                      isEmpty={translation ? false : true}
                       onClick={() => {
                         setTranslationId(translation.id)
                         onDeleteOpen()

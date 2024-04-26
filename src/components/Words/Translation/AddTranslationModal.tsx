@@ -7,10 +7,11 @@ import {
   Select,
   Spacer,
   Textarea,
-  useToast,
 } from "@chakra-ui/react"
 import { useCreateWordTranslationMutation } from "../../../api/translation.api"
 import { indianLanguages } from "../../../utils/lang"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface AddTranslationModalProps {
   isOpen: boolean
@@ -29,7 +30,8 @@ export default function AddTranslationModal({
   const [translation, setTranslation] = useState("")
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const translationMutation = useCreateWordTranslationMutation(word, meaning_id)
 
@@ -38,12 +40,7 @@ export default function AddTranslationModal({
 
     if (!translation || !language) {
       setIsLoading(false)
-      toast({
-        title: "Translation or language cannot be empty",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      })
+      errorToast(Error("Translation or language cannot be empty"))
       return
     }
     setTranslation("")
@@ -52,23 +49,13 @@ export default function AddTranslationModal({
       { language, translation },
       {
         onSuccess: () => {
-          toast({
-            title: "Translation has been added successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Translation has been added successfully")
           setIsLoading(false)
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

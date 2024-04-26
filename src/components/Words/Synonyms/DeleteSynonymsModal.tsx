@@ -1,7 +1,9 @@
-import { useToast, Text } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useDeleteWordSynonymsMutation } from "../../../api/synonyms.api"
 import BaseModal from "../WordModals/BaseModal"
 import { useState } from "react"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteSynonymsModalProps {
   word: string
@@ -18,7 +20,8 @@ export default function DeleteSynonymsModal({
 }: DeleteSynonymsModalProps) {
   const [isLoading, setIsLoading] = useState(false)
 
-  const toast = useToast()
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
 
   const synonymMutation = useDeleteWordSynonymsMutation(word, meaning_id)
 
@@ -31,22 +34,12 @@ export default function DeleteSynonymsModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          toast({
-            title: "Synonyms has been deleted successfully",
-            status: "success",
-            duration: 3000,
-            isClosable: true,
-          })
+          successToast("Synonyms has been deleted successfully")
           onClose()
         },
         onError: (error) => {
           setIsLoading(false)
-          toast({
-            title: error.message,
-            status: "error",
-            duration: 3000,
-            isClosable: true,
-          })
+          errorToast(error)
         },
       }
     )

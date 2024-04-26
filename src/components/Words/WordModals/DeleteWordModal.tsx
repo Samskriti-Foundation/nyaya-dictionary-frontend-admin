@@ -1,8 +1,10 @@
 import { useState } from "react"
 import BaseModal from "./BaseModal"
 import { useDeleteWordMutation } from "../../../api/words.api"
-import { useToast, Text } from "@chakra-ui/react"
+import { Text } from "@chakra-ui/react"
 import { useNavigate } from "react-router-dom"
+import useSuccessToast from "../../../hooks/useSuccessToast"
+import useErrorToast from "../../../hooks/useErrorToast"
 
 interface DeleteWordModalProps {
   isOpen: boolean
@@ -16,7 +18,10 @@ export default function DeleteWordModal({
   word,
 }: DeleteWordModalProps) {
   const [isLoading, setIsLoading] = useState(false)
-  const toast = useToast()
+
+  const successToast = useSuccessToast()
+  const errorToast = useErrorToast()
+
   const wordMutation = useDeleteWordMutation()
 
   const navigate = useNavigate()
@@ -27,22 +32,12 @@ export default function DeleteWordModal({
     wordMutation.mutate(word, {
       onSuccess: () => {
         setIsLoading(false)
-        toast({
-          title: "Word has been deleted successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        })
+        successToast("Word has been deleted successfully")
         navigate("/words")
         onClose()
       },
       onError: (error) => {
-        toast({
-          title: error.message,
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        })
+        errorToast(error)
         setIsLoading(false)
       },
     })

@@ -32,7 +32,7 @@ export const useGetWordNyayaTextReferencesQuery = (
   meaning_id: number
 ) => {
   return useQuery<TNyayaTextReference[]>({
-    queryKey: ["words", word, meaning_id, "nyaya_text_references"],
+    queryKey: ["words", word, meaning_id, "nyaya-text-references"],
     queryFn: () => getWordNyayaTextReferences(word, meaning_id),
   })
 }
@@ -69,7 +69,7 @@ export const useCreateWordNyayaTextReferenceMutation = (
     }) => createWordNyayaTextReference(word, meaning_id, source, description),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["words", word, meaning_id, "nyaya_text_references"],
+        queryKey: ["words", word, meaning_id, "nyaya-text-references"],
       })
     },
   })
@@ -116,7 +116,7 @@ export const useUpdateWordNyayaTextReferenceMutation = (
       ),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["words", word, meaning_id, "nyaya_text_references"],
+        queryKey: ["words", word, meaning_id, "nyaya-text-references"],
       })
     },
   })
@@ -143,7 +143,7 @@ export const useDeleteWordNyayaTextReferenceMutation = (
       deleteWordNyayaTextReference(word, meaning_id, nyaya_text_id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["words", word, meaning_id, "nyaya_text_references"],
+        queryKey: ["words", word, meaning_id, "nyaya-text-references"],
       })
     },
   })
@@ -169,7 +169,7 @@ export const useDeleteWordNyayaTextReferencesMutation = (
       deleteWordNyayaTextReferences(word, meaning_id),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["words", word, meaning_id, "nyaya_text_references"],
+        queryKey: ["words", word, meaning_id, "nyaya-text-references"],
       })
     },
   })

@@ -37,7 +37,7 @@ export default function Navbar() {
           {isAccessAllowed && (
             <Link
               as={NavLink}
-              to="/management"
+              to="/management/"
               _hover={{ color: "primary.500" }}
               _activeLink={{ color: "primary.400" }}
             >

@@ -10,6 +10,7 @@ const useErrorToast = () => {
     duration = 3000,
     isClosable = true
   ) => {
+    console.log(error)
     if (isAxiosError(error)) {
       toast({
         title: error.response?.data
@@ -24,6 +25,7 @@ const useErrorToast = () => {
       toast({
         title: error.message,
         status: "error",
+        position: position,
         duration: duration,
         isClosable: isClosable,
       })

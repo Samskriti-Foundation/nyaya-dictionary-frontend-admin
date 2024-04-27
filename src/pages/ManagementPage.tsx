@@ -1,14 +1,14 @@
-import { Flex, List, ListItem, Link } from "@chakra-ui/react"
+import { Flex, List, Link } from "@chakra-ui/react"
 import BaseLayout from "../layouts/BaseLayout"
 import Drawer from "../components/Drawer/Drawer"
 import { NavLink, Route, Routes } from "react-router-dom"
-import Admin from "../components/DBManagers/DBManagers"
+import DBManagers from "../components/DBManagers/DBManagers"
 import Report from "../components/Report/Report"
 
 const links = [
   {
-    text: "Admins",
-    path: "/management",
+    text: "DB Managers",
+    path: "/management/",
   },
   {
     text: "Reports",
@@ -21,23 +21,23 @@ export default function ManagementPage() {
     <BaseLayout>
       <Flex>
         <Drawer>
-          <List mt="4">
+          <List>
             {links.map((link, index) => (
-              <ListItem
+              <Link
                 key={index}
+                display="block"
                 fontWeight="bold"
                 py={2}
-                _activeLink={{ color: "background" }}
+                as={NavLink}
+                to={link.path}
               >
-                <Link as={NavLink} to={link.path}>
-                  {link.text}
-                </Link>
-              </ListItem>
+                {link.text}
+              </Link>
             ))}
           </List>
         </Drawer>
         <Routes>
-          <Route path="/" element={<Admin />} />
+          <Route path="/" element={<DBManagers />} />
           <Route path="/reports" element={<Report />} />
         </Routes>
       </Flex>

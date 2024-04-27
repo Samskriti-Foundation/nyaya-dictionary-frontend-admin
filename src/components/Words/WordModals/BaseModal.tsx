@@ -29,7 +29,7 @@ export default function BaseModal({
   handleSubmit,
 }: BaseModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="2xl">
+    <Modal isOpen={isOpen} onClose={onClose} size="2xl" scrollBehavior="inside">
       <ModalOverlay />
       <ModalContent>
         <ModalHeader textAlign="center">{title}</ModalHeader>

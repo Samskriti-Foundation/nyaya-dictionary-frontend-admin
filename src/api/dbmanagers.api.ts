@@ -88,7 +88,7 @@ export const deleteDBManager = async (email: string) => {
 export const useDeleteDBManagerMutation = () => {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: deleteDBManager,
+    mutationFn: ({ email }: { email: string }) => deleteDBManager(email),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["dbmanagers"] })
     },

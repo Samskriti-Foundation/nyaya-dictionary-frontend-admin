@@ -59,6 +59,8 @@ import { useState } from "react"
 import LoadingSpinner from "../LoadingSpinner"
 import ErrorMessage from "../ErrorMessage"
 import AddDBManagerModal from "./AddDBManagerModal"
+import EditDBManagerModal from "./EditDBManagerModal"
+import DeleteDBManagerModal from "./DeleteDBManagerModal"
 
 type TDBManager = {
   first_name: string
@@ -70,12 +72,25 @@ type TDBManager = {
 export default function DBManagersTable() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const {
-    isDeleteOpen,
+    isOpen: isEditOpen,
+    onOpen: onEditOpen,
+    onClose: onEditClose,
+  } = useDisclosure()
+  const {
+    isOpen: isDeleteOpen,
     onOpen: onDeleteOpen,
     onClose: onDeleteClose,
   } = useDisclosure()
 
   const { data, isLoading, error } = useGetDBManagersQuery()
+
+  const [selectedDBManager, setSelectedDBManager] = useState<TDBManager>({
+    first_name: "",
+    last_name: "",
+    email: "",
+    role: "",
+    access: "",
+  })
 
   {
     isLoading && <LoadingSpinner />
@@ -108,7 +123,7 @@ export default function DBManagersTable() {
     {
       header: "Actions",
       id: "actions",
-      cell: () => {
+      cell: (info) => {
         return (
           <Flex gap="2" justifyContent="center">
             <IconButton
@@ -118,7 +133,10 @@ export default function DBManagersTable() {
               fontSize="xl"
               variant="outline"
               colorScheme="black"
-              onClick={onOpen}
+              onClick={() => {
+                setSelectedDBManager(info.row.original)
+                onEditOpen()
+              }}
               title="Edit DB Manager"
             />
             <IconButton
@@ -404,6 +422,21 @@ export default function DBManagersTable() {
         </Flex>
       </TableContainer>
       <AddDBManagerModal isOpen={isOpen} onClose={onClose} />
+      <EditDBManagerModal
+        isOpen={isEditOpen}
+        onClose={onEditClose}
+        DBManager={{
+          firstName: selectedDBManager.first_name,
+          lastName: selectedDBManager.last_name,
+          ...selectedDBManager,
+        }}
+      />
+      <DeleteDBManagerModal
+        isOpen={isDeleteOpen}
+        onClose={onDeleteClose}
+        name={selectedDBManager.first_name + " " + selectedDBManager.last_name}
+        email={selectedDBManager.email}
+      />
     </Box>
   )
 }

@@ -146,7 +146,10 @@ export default function DBManagersTable() {
               fontSize="xl"
               variant="outline"
               colorScheme="red"
-              onClick={onDeleteOpen}
+              onClick={() => {
+                setSelectedDBManager(info.row.original)
+                onDeleteOpen()
+              }}
               title="Delete DB Manager"
             />
           </Flex>

@@ -73,6 +73,7 @@ export default function NyayaTable({ word, meaning_id }: NyayaTableProps) {
                       type="EDIT"
                       title="Edit nyaya text reference"
                       onClick={() => {
+                        setNyayaId(nyaya.id)
                         setSource(nyaya.source)
                         setDescription(nyaya.description)
                         onEditOpen()

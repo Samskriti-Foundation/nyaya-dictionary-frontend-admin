@@ -50,12 +50,10 @@ export default function SingleWordPage() {
     onClose: onDeleteClose,
   } = useDisclosure()
 
-  isLoading && <LoadingSpinner />
-
-  error && <ErrorMessage error={error.message} />
-
   return (
     <BaseLayout>
+      {isLoading && <LoadingSpinner />}
+      {error && <ErrorMessage error={error.message} />}
       <Box
         w="80%"
         mx="auto"

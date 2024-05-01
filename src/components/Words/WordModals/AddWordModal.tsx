@@ -1,10 +1,11 @@
 import { Flex, FormControl, FormLabel, Input } from "@chakra-ui/react"
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import BaseModal from "./BaseModal"
 import { useCreateWordMutation } from "../../../api/words.api"
 import { useNavigate } from "react-router-dom"
 import useSuccessToast from "../../../hooks/useSuccessToast"
 import useErrorToast from "../../../hooks/useErrorToast"
+import Sanscript from "@indic-transliteration/sanscript"
 
 interface AddWordModalProps {
   isOpen: boolean
@@ -50,6 +51,31 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
     )
   }
 
+  const handleTransliteration = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+
+    if (value === "") {
+      setEnglishTransliteration("")
+      setSanskritWord("")
+      return
+    }
+
+    if ((e.nativeEvent as InputEvent).inputType === "deleteContentBackward") {
+      setSanskritWord(value)
+      const englishTransliteration = Sanscript.t(value, "devanagari", "hk")
+      setEnglishTransliteration(englishTransliteration)
+    } else {
+      // If any other key is pressed, transliterate the entire text
+      const transliteration = Sanscript.t(
+        english_transliteration + value.charAt(value.length - 1),
+        "hk",
+        "devanagari"
+      )
+      setSanskritWord(transliteration)
+      setEnglishTransliteration((prev) => prev + value.charAt(value.length - 1))
+    }
+  }
+
   return (
     <BaseModal
       title="Add Word Details"
@@ -65,7 +91,7 @@ export default function AddWordModal({ isOpen, onClose }: AddWordModalProps) {
             placeholder="Enter Sanskrit word"
             required
             value={sanskrit_word}
-            onChange={(e) => setSanskritWord(e.target.value)}
+            onChange={(e) => handleTransliteration(e)}
           />
         </FormControl>
         <FormControl>

@@ -49,20 +49,20 @@ import LoadingSpinner from "../LoadingSpinner"
 import ErrorMessage from "../ErrorMessage"
 import { useDebounce } from "../../hooks/useDebounce"
 
-const months = [
-  ["01_Jan", "January"],
-  ["02_Feb", "February"],
-  ["03_Mar", "March"],
-  ["04_Apr", "April"],
-  ["05_May", "May"],
-  ["06_Jun", "June"],
-  ["07_Jul", "July"],
-  ["08_Aug", "August"],
-  ["09_Sep", "September"],
-  ["10_Oct", "October"],
-  ["11_Nov", "November"],
-  ["12_Dec", "December"],
-]
+// const months = [
+//   ["01_Jan", "January"],
+//   ["02_Feb", "February"],
+//   ["03_Mar", "March"],
+//   ["04_Apr", "April"],
+//   ["05_May", "May"],
+//   ["06_Jun", "June"],
+//   ["07_Jul", "July"],
+//   ["08_Aug", "August"],
+//   ["09_Sep", "September"],
+//   ["10_Oct", "October"],
+//   ["11_Nov", "November"],
+//   ["12_Dec", "December"],
+// ]
 
 type TDBLog = {
   timestamp: string
@@ -74,11 +74,13 @@ type TDBLog = {
 }
 
 export default function DatabaseOperationsTable() {
-  const [month] = useState(() => {
-    const currentDate = new Date()
-    const formattedMonth = months[currentDate.getMonth()][0]
-    return formattedMonth
-  })
+  // const [month] = useState(() => {
+  //   const currentDate = new Date()
+  //   const formattedMonth = months[currentDate.getMonth()][0]
+  //   return formattedMonth
+  // })
+
+  const [month] = useState("04_Apr")
 
   const [search, setSearch] = useState("")
   const debounceSearch = useDebounce(search, 300)

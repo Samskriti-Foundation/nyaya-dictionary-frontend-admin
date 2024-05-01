@@ -1,5 +1,3 @@
-import "react-datepicker/dist/react-datepicker.css"
-
 import {
   flexRender,
   getCoreRowModel,
@@ -19,7 +17,6 @@ import {
   MdChevronRight,
   MdFirstPage,
   MdLastPage,
-  MdFilterList,
 } from "react-icons/md"
 
 import { FaSearch, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa"
@@ -44,43 +41,28 @@ import {
   InputGroup,
   Input,
   InputRightElement,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
-  FormControl,
-  RangeSlider,
-  RangeSliderTrack,
-  RangeSliderFilledTrack,
-  RangeSliderThumb,
-  FormLabel,
 } from "@chakra-ui/react"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useGetDBLogsQuery } from "../../api/logs.api"
+import LoadingSpinner from "../LoadingSpinner"
+import ErrorMessage from "../ErrorMessage"
+import { useDebounce } from "../../hooks/useDebounce"
 
-function getFormattedMonth(date: Date) {
-  const months = [
-    "01_Jan",
-    "02_Feb",
-    "03_Mar",
-    "04_Apr",
-    "05_May",
-    "06_Jun",
-    "07_Jul",
-    "08_Aug",
-    "09_Sep",
-    "10_Oct",
-    "11_Nov",
-    "12_Dec",
-  ]
-  return months[date.getMonth()]
-}
+const months = [
+  ["01_Jan", "January"],
+  ["02_Feb", "February"],
+  ["03_Mar", "March"],
+  ["04_Apr", "April"],
+  ["05_May", "May"],
+  ["06_Jun", "June"],
+  ["07_Jul", "July"],
+  ["08_Aug", "August"],
+  ["09_Sep", "September"],
+  ["10_Oct", "October"],
+  ["11_Nov", "November"],
+  ["12_Dec", "December"],
+]
 
 type TDBLog = {
   timestamp: string
@@ -92,12 +74,22 @@ type TDBLog = {
 }
 
 export default function DatabaseOperationsTable() {
-  const currentDate = new Date()
-  const formattedMonth = getFormattedMonth(currentDate)
-  const [month, setMonth] = useState(formattedMonth)
-  const { data } = useGetDBLogsQuery(month)
+  const [month] = useState(() => {
+    const currentDate = new Date()
+    const formattedMonth = months[currentDate.getMonth()][0]
+    return formattedMonth
+  })
 
-  const [columns] = useState<ColumnDef<TDBLog>[]>([
+  const [search, setSearch] = useState("")
+  const debounceSearch = useDebounce(search, 300)
+
+  useEffect(() => {
+    setGlobalFilter(debounceSearch)
+  }, [debounceSearch])
+
+  const { data, isLoading, error } = useGetDBLogsQuery(month)
+
+  const [columns] = useState<ColumnDef<TDBLog>[]>(() => [
     {
       header: "Timestamp",
       accessorKey: "timestamp",
@@ -145,9 +137,6 @@ export default function DatabaseOperationsTable() {
     pageSize: 5,
   })
 
-  const [startDate, setStartDate] = useState(new Date("2024-04-29"))
-  const [endDate, setEndDate] = useState(new Date())
-
   const table = useReactTable({
     data: data || [],
     columns,
@@ -174,46 +163,13 @@ export default function DatabaseOperationsTable() {
 
   return (
     <TableContainer>
-      <Flex w="100%" my="4">
-        <InputGroup
-          w="xl"
-          bg="foreground"
-          boxShadow="md"
-          roundedRight="md"
-          maxW="80%"
-          mx="auto"
-        >
-          <Popover>
-            <PopoverTrigger>
-              <IconButton
-                icon={<MdFilterList />}
-                roundedRight="none"
-                aria-label="filters"
-              />
-            </PopoverTrigger>
-            <PopoverContent>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverHeader>Select Filters</PopoverHeader>
-              <PopoverBody>
-                <FormControl>
-                  <FormLabel>Date</FormLabel>
-                  <RangeSlider
-                    aria-label={["min", "max"]}
-                    defaultValue={[10, 30]}
-                  >
-                    <RangeSliderTrack>
-                      <RangeSliderFilledTrack />
-                    </RangeSliderTrack>
-                    <RangeSliderThumb index={0} />
-                    <RangeSliderThumb index={1} />
-                  </RangeSlider>
-                </FormControl>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
+      {isLoading && <LoadingSpinner />}
+      {error && <ErrorMessage error={error.message} />}
+      <Flex w="100%" my="4" justifyContent="center" gap="2">
+        <InputGroup w="xl" bg="foreground" boxShadow="md" roundedRight="md">
           <Input
-            onChange={(e) => setGlobalFilter(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(() => e.target.value)}
             outline="none"
             placeholder="Search"
             _focus={{ borderColor: "tertiary.400" }}
@@ -223,6 +179,20 @@ export default function DatabaseOperationsTable() {
             <FaSearch opacity="0.5" />
           </InputRightElement>
         </InputGroup>
+        {/* <Select
+          value={month}
+          onChange={(e) => handleMonthChange(e)}
+          w="200px"
+          bg="foreground"
+          boxShadow="md"
+          roundedRight="md"
+        >
+          {months.map((month_data, index) => (
+            <option key={index} value={month_data[0]}>
+              {month_data[1]}
+            </option>
+          ))}
+        </Select> */}
       </Flex>
       <Table variant="striped">
         <Thead>

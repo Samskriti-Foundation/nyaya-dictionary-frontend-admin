@@ -24,12 +24,12 @@ type TAuthLog = {
   db_manager_email: string
 }
 
-export const getDBLogs = async (month: string | null) => {
+export const getDBLogs = async (month: string) => {
   const response = await api.get(`/logs/db-ops/${month}`)
   return response.data
 }
 
-export const useGetDBLogsQuery = (month: string | null) => {
+export const useGetDBLogsQuery = (month: string) => {
   return useQuery<TDBLog[]>({
     queryKey: ["logs", month],
     queryFn: () => getDBLogs(month),

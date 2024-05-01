@@ -18,10 +18,9 @@ import {
   MdChevronRight,
   MdFirstPage,
   MdLastPage,
-  MdFilterList,
 } from "react-icons/md"
 
-import { FaSearch, FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa"
+import { FaSortAlphaDown, FaSortAlphaDownAlt } from "react-icons/fa"
 
 import {
   Text,
@@ -40,45 +39,11 @@ import {
   NumberIncrementStepper,
   NumberInput,
   NumberDecrementStepper,
-  InputGroup,
-  Input,
-  InputRightElement,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  PopoverFooter,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverAnchor,
-  FormControl,
-  RangeSlider,
-  RangeSliderTrack,
-  RangeSliderFilledTrack,
-  RangeSliderThumb,
-  FormLabel,
 } from "@chakra-ui/react"
 
 import { useGetAuthLogsQuery } from "../../api/logs.api"
-
-function getFormattedMonth(date: Date) {
-  const months = [
-    "01_Jan",
-    "02_Feb",
-    "03_Mar",
-    "04_Apr",
-    "05_May",
-    "06_Jun",
-    "07_Jul",
-    "08_Aug",
-    "09_Sep",
-    "10_Oct",
-    "11_Nov",
-    "12_Dec",
-  ]
-  return months[date.getMonth()]
-}
+import ErrorMessage from "../ErrorMessage"
+import LoadingSpinner from "../LoadingSpinner"
 
 type TAuthLog = {
   timestamp: string
@@ -87,7 +52,7 @@ type TAuthLog = {
 }
 
 export default function LoginAuditsTable() {
-  const [columns] = useState<ColumnDef<TAuthLog>[]>([
+  const [columns] = useState<ColumnDef<TAuthLog>[]>(() => [
     {
       accessorKey: "timestamp",
       header: "Timestamp",
@@ -120,10 +85,7 @@ export default function LoginAuditsTable() {
     pageSize: 5,
   })
 
-  const currentDate = new Date()
-  const formattedMonth = getFormattedMonth(currentDate)
-  const [month, setMonth] = useState(formattedMonth)
-  const { data } = useGetAuthLogsQuery()
+  const { data, isLoading, error } = useGetAuthLogsQuery()
 
   const table = useReactTable({
     data: data || [],
@@ -150,6 +112,8 @@ export default function LoginAuditsTable() {
 
   return (
     <TableContainer>
+      {isLoading && <LoadingSpinner />}
+      {error && <ErrorMessage error={error.message} />}
       <Table variant="striped">
         <Thead>
           {table.getHeaderGroups().map((headerGroup) => (

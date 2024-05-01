@@ -5,7 +5,7 @@ export default function Drawer({ children }: { children: React.ReactNode }) {
     <Box
       bg="tertiary.300"
       minW="240px"
-      h="calc(100vh - 64px)"
+      minH="calc(100vh - 64px)"
       boxShadow="xl"
       textAlign="center"
     >

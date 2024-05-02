@@ -62,7 +62,7 @@ export default function AddEtymologyModal({
       <FormControl>
         <FormLabel>New etymology</FormLabel>
         <Textarea
-          placeholder="Enter new meaning"
+          placeholder="Enter new etymology"
           value={etymology}
           onChange={(e) => setEtymology(e.target.value)}
         />

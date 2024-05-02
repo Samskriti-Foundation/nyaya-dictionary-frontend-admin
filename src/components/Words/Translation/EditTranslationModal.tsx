@@ -61,7 +61,7 @@ export default function EditTranslationModal({
         onSuccess: () => {
           setTranslation("")
           setLanguage("")
-          successToast("Translation has been added successfully")
+          successToast("Translation has been updated successfully")
           setIsLoading(false)
           onClose()
         },

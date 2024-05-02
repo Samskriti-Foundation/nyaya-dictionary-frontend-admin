@@ -37,7 +37,7 @@ export default function DeleteSingleTranslationModal({
       {
         onSuccess: () => {
           setIsLoading(false)
-          successToast("Translation deleted")
+          successToast("Translation deleted successfully")
           onClose()
         },
         onError: (error) => {

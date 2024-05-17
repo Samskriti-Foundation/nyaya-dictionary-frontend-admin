@@ -43,6 +43,7 @@ export default function AddSynonymModal({
           setIsLoading(false)
           setEtymology("")
           successToast("Synonym added successfully")
+          onClose()
         },
         onError: (error) => {
           errorToast(error)

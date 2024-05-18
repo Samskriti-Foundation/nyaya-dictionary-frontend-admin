@@ -18,7 +18,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ChakraProvider theme={theme}>
       <Global styles={GlobalStyles} />
-      <BrowserRouter basename="/nyaya-admin">
+      <BrowserRouter>
         <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <App />

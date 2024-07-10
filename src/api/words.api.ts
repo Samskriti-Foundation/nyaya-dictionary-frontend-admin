@@ -16,6 +16,18 @@ export interface TWord {
   meaning_ids: [number]
 }
 
+const getWordsCount = async () => {
+  const response = await api.get(`/words/total-count`)
+  return response.data
+}
+
+export const useGetWordsCountQuery = () => {
+  return useQuery({
+    queryKey: ["words-count"],
+    queryFn: getWordsCount,
+  })
+}
+
 export const getWords = async () => {
   const response = await api.get(`/words`)
   return response.data

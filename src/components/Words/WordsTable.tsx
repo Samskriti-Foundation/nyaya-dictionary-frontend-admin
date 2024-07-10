@@ -18,6 +18,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Select,
+  Heading,
 } from "@chakra-ui/react"
 
 import {
@@ -32,6 +33,7 @@ import {
 import { useEffect, useMemo, useState } from "react"
 import { useDebounce } from "../../hooks/useDebounce"
 import LoadingSpinner from "../LoadingSpinner"
+import BeatLoader from "react-spinners/BeatLoader"
 import ErrorMessage from "../ErrorMessage"
 import {
   MdChevronLeft,
@@ -100,26 +102,26 @@ export default function WordsTable({
 
   return (
     <TableContainer bg="foreground" boxShadow="lg" rounded="md">
-      <Table variant="simple">
-        <Thead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <Tr key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <Th key={header.id}>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
-                </Th>
-              ))}
-            </Tr>
-          ))}
-        </Thead>
-        <Tbody>
-          {data &&
-            table.getRowModel().rows.map((row, index) => (
+      {data ? (
+        <Table variant="simple">
+          <Thead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <Tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <Th key={header.id}>
+                    {header.isPlaceholder
+                      ? null
+                      : flexRender(
+                          header.column.columnDef.header,
+                          header.getContext()
+                        )}
+                  </Th>
+                ))}
+              </Tr>
+            ))}
+          </Thead>
+          <Tbody>
+            {table.getRowModel().rows.map((row, index) => (
               <Tr
                 key={row.id}
                 onClick={() => navigate(`/words/${row.original.sanskrit_word}`)}
@@ -133,8 +135,13 @@ export default function WordsTable({
                 ))}
               </Tr>
             ))}
-        </Tbody>
-      </Table>
+          </Tbody>
+        </Table>
+      ) : (
+        <Heading textAlign="center" p="2">
+          Please wait, loading data <BeatLoader size={8} />
+        </Heading>
+      )}
       <Flex justifyContent="center" alignItems="center" gap="4" my="4">
         <Flex gap="2">
           <IconButton

@@ -39,9 +39,10 @@ Nyaya - Admin Panel is the admin panel of [Nyaya Khosha](https://github.com/Sams
    ```
 
 4. **Copy the environment variables file**
-```bash
-cp .env.example .env
-```
+   
+  ```bash
+  cp .env.example .env
+  ```
 
 5. **Start server:**
 

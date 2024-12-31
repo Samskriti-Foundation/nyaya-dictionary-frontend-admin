@@ -38,7 +38,12 @@ Nyaya - Admin Panel is the admin panel of [Nyaya Khosha](https://github.com/Sams
    yarn
    ```
 
-3. **Start server:**
+4. **Copy the environment variables file**
+```bash
+cp .env.example .env
+```
+
+5. **Start server:**
 
    ```bash
    yarn dev
